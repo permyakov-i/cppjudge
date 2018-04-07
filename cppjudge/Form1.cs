@@ -12,32 +12,33 @@ using System.Diagnostics;
 using System.IO;
 using System.Collections;
 
+
 namespace tinycpp
 {
     public partial class Form1 : Form
     {
+        string CurrentFile;
         public Form1()
         {
-            InitializeComponent();
+            InitializeComponent();        
             //Скомпилировать программу
             this.testFile.Click += new System.EventHandler(this.testFile_Click);
         }
 
         private void testFile_Click(object sender, EventArgs e)
         {
-
             //Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider;
-            Microsoft.VisualC.CppCodeProvider codeProvider = new Microsoft.VisualC.CppCodeProvider();
-            ICodeCompiler icc = codeProvider.CreateCompiler();
-            string Output = "Out.exe";
+            //Microsoft.VisualC.CppCodeProvider codeProvider = new Microsoft.VisualC.CppCodeProvider();  
+            //ICodeCompiler icc = codeProvider.CreateCompiler();
+            /*string Output = "Out.exe";
             Button ButtonObject = (Button)sender;
-
+            CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("C++");
             textBox2.Text = "";
             System.CodeDom.Compiler.CompilerParameters parameters = new CompilerParameters();
             //Сгенерировать EXE
             parameters.GenerateExecutable = true;
             parameters.OutputAssembly = Output;
-            CompilerResults results = icc.CompileAssemblyFromSource(parameters, textBox1.Text);
+            CompilerResults results = codeProvider.CompileAssemblyFromSource(parameters, textBox1.Text);
 
             if (results.Errors.Count > 0)
             {
@@ -56,8 +57,8 @@ namespace tinycpp
                 //Успешная компиляция
                 textBox2.ForeColor = Color.Blue;
                 textBox2.Text = "Success!";
-            }
-    }
+            }*/
+        }
 
         private void openFile_Click(object sender, EventArgs e)
         {
@@ -90,7 +91,10 @@ namespace tinycpp
 
         public void ProcessFile(string path)
         {
+            comboBox1.Items.Clear();
             comboBox1.Items.Add(path);
         }
+
+       
     }
 }
