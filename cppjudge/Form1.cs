@@ -27,6 +27,14 @@ namespace tinycpp
 
         private void testFile_Click(object sender, EventArgs e)
         {
+            string fileName = Path.GetFileName(CurrentFile);
+            string exeName = Path.GetFileNameWithoutExtension(CurrentFile) + ".exe";
+            string workingDir = Directory.GetParent(CurrentFile) + "";
+            string compile = Directory.GetParent(Application.ExecutablePath) + "\\compile.cmd";
+
+            File.Delete(Path.Combine(workingDir, exeName));
+
+            StartProcess(true, "cmd", "/c", "\"" + compile + "\"", workingDir, fileName, exeName);
             //Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider;
             //Microsoft.VisualC.CppCodeProvider codeProvider = new Microsoft.VisualC.CppCodeProvider();  
             //ICodeCompiler icc = codeProvider.CreateCompiler();
@@ -64,6 +72,7 @@ namespace tinycpp
         {
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                CurrentFile = openFileDialog1.FileName;
                 System.IO.StreamReader sr = new
                    System.IO.StreamReader(openFileDialog1.FileName);
                 textBox1.Text=sr.ReadToEnd();
@@ -95,6 +104,35 @@ namespace tinycpp
             comboBox1.Items.Add(path);
         }
 
-       
+        void StartProcess(bool hidden, string command, params string[] args)
+        {
+            ProcessStartInfo pStartInfo = new ProcessStartInfo();
+
+            pStartInfo.FileName = command;
+            pStartInfo.Arguments = string.Join(" ", args);
+            pStartInfo.UseShellExecute = false;
+
+            if (hidden)
+            {
+                pStartInfo.RedirectStandardError = true;
+                pStartInfo.RedirectStandardOutput = true;
+                pStartInfo.CreateNoWindow = true;
+            }
+
+            Process proc = new Process();
+            proc.StartInfo = pStartInfo;
+
+            proc.Start();
+
+            textBox2.Clear();
+
+            if (hidden)
+            {
+                while (!proc.StandardError.EndOfStream)
+                {
+                    textBox2.AppendText("  Error: " + proc.StandardError.ReadLine() + Environment.NewLine);
+                }
+            }
+        }
     }
 }
