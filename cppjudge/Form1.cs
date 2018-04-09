@@ -26,9 +26,10 @@ namespace tinycpp
 
         private void testFile_Click(object sender, EventArgs e)
         {
+            string exeName = Path.GetFileNameWithoutExtension(CurrentFile); 
             Process proc = new Process();
             proc.StartInfo.FileName = @"C:/Program Files/mingw-w64/x86_64-7.3.0-posix-seh-rt_v5-rev0/mingw64/bin/g++";
-            proc.StartInfo.Arguments = "D:/Code/cppjudge/cppjudge/test.cpp -o compiled_test";
+            proc.StartInfo.Arguments = CurrentFile + " -o" + exeName;
             proc.StartInfo.CreateNoWindow = false;
             proc.StartInfo.RedirectStandardError = true;
             proc.StartInfo.RedirectStandardOutput = true;
@@ -68,11 +69,6 @@ namespace tinycpp
                 MessageBox.Show("error:" + stderr);
             }
 
-            //string fileName = Path.GetFileName(CurrentFile);
-            //string exeName = Path.GetFileNameWithoutExtension(CurrentFile);
-            //string workingDir = Directory.GetParent(CurrentFile) + "";
-            //string compile = Directory.GetParent(Application.ExecutablePath) + "\\compile.cmd";
-            //System.Diagnostics.Process.Start("C:/Program Files/mingw-w64/x86_64-7.3.0-posix-seh-rt_v5-rev0/mingw64/bin/g++.exe", fileName+" -o "+ exeName);
         }
 
         private void openFile_Click(object sender, EventArgs e)
