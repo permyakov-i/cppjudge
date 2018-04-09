@@ -22,50 +22,57 @@ namespace tinycpp
         {
             InitializeComponent();        
             //Скомпилировать программу
-            this.testFile.Click += new System.EventHandler(this.testFile_Click);
         }
 
         private void testFile_Click(object sender, EventArgs e)
         {
-            string fileName = Path.GetFileName(CurrentFile);
-            string exeName = Path.GetFileNameWithoutExtension(CurrentFile) + ".exe";
-            string workingDir = Directory.GetParent(CurrentFile) + "";
-            string compile = Directory.GetParent(Application.ExecutablePath) + "\\compile.cmd";
+            Process proc = new Process();
+            proc.StartInfo.FileName = @"C:/Program Files/mingw-w64/x86_64-7.3.0-posix-seh-rt_v5-rev0/mingw64/bin/g++";
+            proc.StartInfo.Arguments = "D:/Code/cppjudge/cppjudge/test.cpp -o compiled_test";
+            proc.StartInfo.CreateNoWindow = false;
+            proc.StartInfo.RedirectStandardError = true;
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.StartInfo.UseShellExecute = false;
+            proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            proc.EnableRaisingEvents = true;
 
-            File.Delete(Path.Combine(workingDir, exeName));
+            var errors = new StringBuilder();
+            var output = new StringBuilder();
+            var hadErrors = false;
 
-            StartProcess(true, "cmd", "/c", "\"" + compile + "\"", workingDir, fileName, exeName);
-            //Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider;
-            //Microsoft.VisualC.CppCodeProvider codeProvider = new Microsoft.VisualC.CppCodeProvider();  
-            //ICodeCompiler icc = codeProvider.CreateCompiler();
-            /*string Output = "Out.exe";
-            Button ButtonObject = (Button)sender;
-            CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("C++");
-            textBox2.Text = "";
-            System.CodeDom.Compiler.CompilerParameters parameters = new CompilerParameters();
-            //Сгенерировать EXE
-            parameters.GenerateExecutable = true;
-            parameters.OutputAssembly = Output;
-            CompilerResults results = codeProvider.CompileAssemblyFromSource(parameters, textBox1.Text);
+            // Получить вывод
+            proc.OutputDataReceived += (s, d) => {
+                output.Append(d.Data);
+            };
 
-            if (results.Errors.Count > 0)
-            {
-                textBox2.ForeColor = Color.Red;
-                foreach (CompilerError CompErr in results.Errors)
+            // Получить ошибки
+            proc.ErrorDataReceived += (s, d) => {
+                if (!hadErrors)
                 {
-                    textBox2.Text = textBox2.Text +
-                                "Compilation failed, err string " + CompErr.Line +
-                                ", err code: " + CompErr.ErrorNumber +
-                                ", '" + CompErr.ErrorText + ";" +
-                                Environment.NewLine + Environment.NewLine;
+                    hadErrors = !String.IsNullOrEmpty(d.Data);
                 }
-            }
-            else
+                errors.Append(d.Data);
+            };
+
+            proc.Start();
+            // Слушать поток
+            proc.BeginErrorReadLine();
+            proc.BeginOutputReadLine();
+
+            proc.WaitForExit();
+            string stdout = output.ToString();
+            string stderr = errors.ToString();
+
+            if (proc.ExitCode != 0 || hadErrors)
             {
-                //Успешная компиляция
-                textBox2.ForeColor = Color.Blue;
-                textBox2.Text = "Success!";
-            }*/
+                MessageBox.Show("error:" + stderr);
+            }
+
+            //string fileName = Path.GetFileName(CurrentFile);
+            //string exeName = Path.GetFileNameWithoutExtension(CurrentFile);
+            //string workingDir = Directory.GetParent(CurrentFile) + "";
+            //string compile = Directory.GetParent(Application.ExecutablePath) + "\\compile.cmd";
+            //System.Diagnostics.Process.Start("C:/Program Files/mingw-w64/x86_64-7.3.0-posix-seh-rt_v5-rev0/mingw64/bin/g++.exe", fileName+" -o "+ exeName);
         }
 
         private void openFile_Click(object sender, EventArgs e)
@@ -104,6 +111,7 @@ namespace tinycpp
             comboBox1.Items.Add(path);
         }
 
+        /*
         void StartProcess(bool hidden, string command, params string[] args)
         {
             ProcessStartInfo pStartInfo = new ProcessStartInfo();
@@ -133,6 +141,6 @@ namespace tinycpp
                     textBox2.AppendText("  Error: " + proc.StandardError.ReadLine() + Environment.NewLine);
                 }
             }
-        }
+        }*/
     }
 }
