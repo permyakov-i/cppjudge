@@ -76,10 +76,6 @@ namespace tinycpp
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 CurrentFile = openFileDialog1.FileName;
-                System.IO.StreamReader sr = new
-                   System.IO.StreamReader(openFileDialog1.FileName);
-                textBox1.Text=sr.ReadToEnd();
-                sr.Close();
             }
         }
 
@@ -95,7 +91,7 @@ namespace tinycpp
 
         public void ProcessDirectory(string targetDirectory)
         {
-            // Process the list of files found in the directory.
+            // Process the list of files found in thedirectory.
             string[] fileEntries = Directory.GetFiles(targetDirectory);
             foreach (string fileName in fileEntries)
                 ProcessFile(fileName);
