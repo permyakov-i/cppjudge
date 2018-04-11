@@ -26,7 +26,14 @@ namespace tinycpp
 
         private void testFile_Click(object sender, EventArgs e)
         {
-            string exeName = Path.GetFileNameWithoutExtension(CurrentFile); 
+            compileCode();
+        }
+
+        /* Скомпилировать тестируемую программу
+         */
+        public void compileCode ()
+        {
+            string exeName = Path.GetFileNameWithoutExtension(CurrentFile);
             Process proc = new Process();
             proc.StartInfo.FileName = @"C:/Program Files/mingw-w64/x86_64-7.3.0-posix-seh-rt_v5-rev0/mingw64/bin/g++";
             proc.StartInfo.Arguments = CurrentFile + " -o" + exeName;
@@ -68,7 +75,6 @@ namespace tinycpp
             {
                 MessageBox.Show("error:" + stderr);
             }
-
         }
 
         private void openFile_Click(object sender, EventArgs e)
