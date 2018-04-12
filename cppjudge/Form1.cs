@@ -80,9 +80,9 @@ namespace tinycpp
             proc.WaitForExit();
             // Проверка памяти процесса
             
-            if (memoryUsed>256)
+            if (memoryUsed> 268435456)
             {
-                result = "[FAIL] Out of memory " + memoryUsed.ToString() + "used";
+                result = "[FAIL] Out of memory " + (memoryUsed/ 1048576).ToString() + "MB used";
             }
             string stdout = output.ToString();
             string stderr = errors.ToString();
