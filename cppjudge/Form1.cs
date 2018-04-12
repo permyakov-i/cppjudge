@@ -20,6 +20,7 @@ namespace tinycpp
         string CurrentFile;
         string testResult;
         int globalGrade=0;
+        int testsCount=0;
         public Form1()
         {
             InitializeComponent();        
@@ -158,7 +159,8 @@ namespace tinycpp
                 path = folderBrowserDialog1.SelectedPath;
             }
             ProcessDirectory(path);
-            textBox1.Text = globalGrade.ToString();
+            int grade= (globalGrade/(testsCount-2))*100;
+            textBox1.Text = "Overall grade: " + grade.ToString();
         }
 
         public void ProcessDirectory(string targetDirectory)
@@ -166,6 +168,7 @@ namespace tinycpp
             comboBox1.Items.Clear();
             // Process the list of files found in thedirectory.
             string[] fileEntries = Directory.GetFiles(targetDirectory);
+            testsCount = fileEntries.Count();
             foreach (string fileName in fileEntries)
             {
                 ProcessFile(fileName);
