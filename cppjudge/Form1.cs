@@ -18,6 +18,8 @@ namespace tinycpp
     public partial class Form1 : Form
     {
         string CurrentFile;
+        string testResult;
+        int globalGrade=0;
         public Form1()
         {
             InitializeComponent();        
@@ -29,7 +31,7 @@ namespace tinycpp
             compileCode();
         }
 
-        public void runTest(string fileName)
+        public string runTest(string fileName)
         {
             string result;
             // Прочитать файл теста
@@ -88,6 +90,8 @@ namespace tinycpp
             {
                 MessageBox.Show("error:" + stderr);
             }
+
+            return stdout;
         }
 
         /* Скомпилировать тестируемую программу
@@ -154,6 +158,7 @@ namespace tinycpp
                 path = folderBrowserDialog1.SelectedPath;
             }
             ProcessDirectory(path);
+            textBox1.Text = globalGrade.ToString();
         }
 
         public void ProcessDirectory(string targetDirectory)
@@ -164,16 +169,31 @@ namespace tinycpp
             foreach (string fileName in fileEntries)
             {
                 ProcessFile(fileName);
-                if (fileName.EndsWith(".a")
+                if (fileName.EndsWith(".a"))
                 {
-
+                    int grade = compareResult(fileName, testResult);
+                    globalGrade += grade;
                 } else
                 {
-                    runTest(fileName);
+                    testResult=runTest(fileName);
                 }
             }
         }
 
+        public int compareResult(string fileName, string result)
+        {
+            int grade = 0;
+            // Прочитать файл теста
+            string[] readText = File.ReadAllLines(fileName);
+            foreach (string s in readText)
+            {
+                if (result==s)
+                {
+                    grade++;
+                }
+            }
+            return grade;
+        }
 
         public void ProcessFile(string path)
         {
