@@ -17,10 +17,13 @@ namespace tinycpp
 {
     public partial class Form1 : Form
     {
-        string CurrentFile;
-        string testResult;
-        int globalGrade=0;
-        int testsCount=0;
+        bool isOk = true; // флаг ошибки
+        string CurrentFile;   // Текущий открытый файл
+        string testResult;   // Выход теста
+        int globalGrade=0;  // Оценка
+        int testsCount=0;   // Количество тестов
+        int currTest = 1; // Номер текущего теста
+        int memoryLimit = 268435456; // Ограничение памяти
         public Form1()
         {
             InitializeComponent();        
@@ -34,7 +37,8 @@ namespace tinycpp
 
         public string runTest(string fileName)
         {
-            string result;
+            isOk = true;
+            string result="";
             // Прочитать файл теста
             string[] readText = File.ReadAllLines(fileName);
 
@@ -79,20 +83,27 @@ namespace tinycpp
             }         
             proc.WaitForExit();
             // Проверка памяти процесса
-            
-            if (memoryUsed> 268435456)
+            if (memLimit.TextLength!=0)
+            {
+                Int32.TryParse(memLimit.Text, out memoryLimit);
+            }
+            if (memoryUsed> memoryLimit)
             {
                 result = "[FAIL] Out of memory " + (memoryUsed/ 1048576).ToString() + "MB used";
+                textBox1.Text += result + " in test №" + currTest.ToString()+"\n";
+                isOk = false;
             }
             string stdout = output.ToString();
             string stderr = errors.ToString();
-
+            currTest++;
             if (proc.ExitCode != 0 || hadErrors)
             {
                 MessageBox.Show("error:" + stderr);
             }
-
-            return stdout;
+            if (isOk)
+                return stdout;
+            else
+                return result;
         }
 
         /* Скомпилировать тестируемую программу
@@ -160,7 +171,7 @@ namespace tinycpp
             }
             ProcessDirectory(path);
             int grade= (globalGrade/(testsCount-2))*100;
-            textBox1.Text = "Overall grade: " + grade.ToString();
+            textBox1.Text += "Overall grade: " + grade.ToString();
         }
 
         public void ProcessDirectory(string targetDirectory)
