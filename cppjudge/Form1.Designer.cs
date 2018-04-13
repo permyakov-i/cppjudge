@@ -40,6 +40,8 @@
             this.memLimit = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.timeLim = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.compilerPath = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // testFile
@@ -132,11 +134,31 @@
             this.timeLim.Size = new System.Drawing.Size(237, 20);
             this.timeLim.TabIndex = 10;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 135);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(109, 13);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "Путь к компилятору";
+            // 
+            // compilerPath
+            // 
+            this.compilerPath.Location = new System.Drawing.Point(12, 152);
+            this.compilerPath.Multiline = true;
+            this.compilerPath.Name = "compilerPath";
+            this.compilerPath.Size = new System.Drawing.Size(236, 35);
+            this.compilerPath.TabIndex = 12;
+            this.compilerPath.Text = "C:/Program Files/mingw-w64/x86_64-7.3.0-posix-seh-rt_v5-rev0/mingw64/bin/g++";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(513, 374);
+            this.Controls.Add(this.compilerPath);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.timeLim);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.memLimit);
@@ -168,6 +190,8 @@
         private System.Windows.Forms.TextBox memLimit;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox timeLim;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox compilerPath;
     }
 }
 

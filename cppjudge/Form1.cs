@@ -129,7 +129,7 @@ namespace tinycpp
         {
             string exeName = Path.GetFileNameWithoutExtension(CurrentFile);
             Process proc = new Process();
-            proc.StartInfo.FileName = @"C:/Program Files/mingw-w64/x86_64-7.3.0-posix-seh-rt_v5-rev0/mingw64/bin/g++";
+            proc.StartInfo.FileName = @compilerPath.Text;
             proc.StartInfo.Arguments = CurrentFile + " -o" + exeName;
             proc.StartInfo.CreateNoWindow = false;
             proc.StartInfo.RedirectStandardError = true;
@@ -168,6 +168,9 @@ namespace tinycpp
             if (proc.ExitCode != 0 || hadErrors)
             {
                 MessageBox.Show("error:" + stderr);
+            }else
+            {
+                MessageBox.Show("Compilation successful");
             }
         }
 
