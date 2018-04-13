@@ -38,6 +38,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.memLimit = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.timeLim = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // testFile
@@ -103,22 +105,40 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 52);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(123, 13);
+            this.label2.Size = new System.Drawing.Size(80, 13);
             this.label2.TabIndex = 7;
-            this.label2.Text = "Введите лимит памяти";
+            this.label2.Text = "Лимит памяти";
             // 
             // memLimit
             // 
-            this.memLimit.Location = new System.Drawing.Point(13, 69);
+            this.memLimit.Location = new System.Drawing.Point(12, 68);
             this.memLimit.Name = "memLimit";
             this.memLimit.Size = new System.Drawing.Size(236, 20);
             this.memLimit.TabIndex = 8;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 92);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(152, 13);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "Лимит времени выполнения";
+            // 
+            // timeLim
+            // 
+            this.timeLim.Location = new System.Drawing.Point(12, 108);
+            this.timeLim.Name = "timeLim";
+            this.timeLim.Size = new System.Drawing.Size(237, 20);
+            this.timeLim.TabIndex = 10;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(513, 374);
+            this.Controls.Add(this.timeLim);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.memLimit);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -146,6 +166,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox memLimit;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox timeLim;
     }
 }
 

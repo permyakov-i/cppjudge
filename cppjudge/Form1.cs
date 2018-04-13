@@ -23,6 +23,7 @@ namespace tinycpp
         int globalGrade=0;  // Оценка
         int testsCount=0;   // Количество тестов
         int currTest = 1; // Номер текущего теста
+        int timeLimit = 150;
         int memoryLimit = 268435456; // Ограничение памяти
         public Form1()
         {
@@ -33,6 +34,7 @@ namespace tinycpp
         private void testFile_Click(object sender, EventArgs e)
         {
             compileCode();
+            textBox1.Clear();
         }
 
         public string runTest(string fileName)
@@ -71,12 +73,14 @@ namespace tinycpp
             }
                 errors.Append(d.Data);
             };
-
+            Stopwatch sw = Stopwatch.StartNew();
             proc.Start();
             // Слушать поток
             proc.BeginErrorReadLine();
             proc.BeginOutputReadLine();
-            long memoryUsed = proc.PrivateMemorySize64;
+            long memoryUsed = proc.PrivateMemorySize64; //считать память
+            
+            TimeSpan timeElapsed = sw.Elapsed; //считать время выполнения
             foreach (string s in readText)
             {
                 proc.StandardInput.WriteLine(s);
@@ -89,10 +93,23 @@ namespace tinycpp
             }
             if (memoryUsed> memoryLimit)
             {
-                result = "[FAIL] Out of memory " + (memoryUsed/ 1048576).ToString() + "MB used";
+                result = "[FAIL] Out of memory " + (memoryUsed/ 1024).ToString() + "KB used";
                 textBox1.Text += result + " in test №" + currTest.ToString()+"\n";
                 isOk = false;
             }
+            // Проверка времени выполнения
+            
+            if (timeLim.TextLength!=0)
+            {
+                Int32.TryParse(timeLim.Text, out timeLimit);
+            }
+            if (timeElapsed.TotalSeconds > timeLimit)
+            {
+                result = "[FAIL] Timeout " + timeElapsed.TotalSeconds.ToString() + " seconds";
+                textBox1.Text += result + " in test №" + currTest.ToString() + "\n";
+                isOk = false;
+            }
+            // Вывод
             string stdout = output.ToString();
             string stderr = errors.ToString();
             currTest++;
@@ -164,6 +181,7 @@ namespace tinycpp
 
         private void openTests_Click(object sender, EventArgs e)
         {
+            textBox1.Clear();
             string path = "";
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
