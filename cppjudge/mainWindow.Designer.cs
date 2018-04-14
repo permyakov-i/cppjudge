@@ -42,6 +42,7 @@
             this.timeLim = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.compilerPath = new System.Windows.Forms.TextBox();
+            this.testBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // compileFile
@@ -152,11 +153,22 @@
             this.compilerPath.TabIndex = 12;
             this.compilerPath.Text = "C:/Program Files/mingw-w64/x86_64-7.3.0-posix-seh-rt_v5-rev0/mingw64/bin/g++";
             // 
+            // testBtn
+            // 
+            this.testBtn.Location = new System.Drawing.Point(140, 333);
+            this.testBtn.Name = "testBtn";
+            this.testBtn.Size = new System.Drawing.Size(125, 23);
+            this.testBtn.TabIndex = 13;
+            this.testBtn.Text = "Тестировать";
+            this.testBtn.UseVisualStyleBackColor = true;
+            this.testBtn.Click += new System.EventHandler(this.testBtn_Click);
+            // 
             // mainWindowForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(513, 374);
+            this.Controls.Add(this.testBtn);
             this.Controls.Add(this.compilerPath);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.timeLim);
@@ -192,6 +204,7 @@
         private System.Windows.Forms.TextBox timeLim;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox compilerPath;
+        private System.Windows.Forms.Button testBtn;
     }
 }
 

@@ -25,6 +25,7 @@ namespace tinycpp
         int currTest = 1; // Номер текущего теста
         int timeLimit = 150;
         int memoryLimit = 268435456; // Ограничение памяти
+        string directoryPath = ""; // Путь к папке с тестами
         public mainWindowForm()
         {
             InitializeComponent();        
@@ -189,14 +190,12 @@ namespace tinycpp
         private void openTests_Click(object sender, EventArgs e)
         {
             statWindow.Clear();
-            string path = "";
+
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
-                path = folderBrowserDialog1.SelectedPath;
+                directoryPath = folderBrowserDialog1.SelectedPath;
             }
-            ProcessDirectory(path);
-            int grade= (globalGrade/(testsCount-2))*100;
-            statWindow.Text += "Overall grade: " + grade.ToString();
+            ProcessDirectory(directoryPath);
         }
 
         // Обработка тестов в папке
@@ -205,18 +204,9 @@ namespace tinycpp
             folderItems.Items.Clear();
             // Process the list of files found in thedirectory.
             string[] fileEntries = Directory.GetFiles(targetDirectory);
-            testsCount = fileEntries.Count();
             foreach (string fileName in fileEntries)
             {
                 ProcessFile(fileName);
-                if (fileName.EndsWith(".a"))
-                {
-                    int grade = compareResult(fileName, testResult);
-                    globalGrade += grade;
-                } else
-                {
-                    testResult=runTest(fileName);
-                }
             }
         }
 
@@ -240,6 +230,32 @@ namespace tinycpp
         public void ProcessFile(string path)
         {
             folderItems.Items.Add(path);
+        }
+
+        private void testBtn_Click(object sender, EventArgs e)
+        {
+            testAll(directoryPath);
+            int grade = (globalGrade / (testsCount - 2)) * 100;
+            statWindow.Text += "Overall grade: " + grade.ToString();
+        }
+
+        private void testAll(string targetDirectory)
+        {
+            // Тестировать
+            string[] fileEntries = Directory.GetFiles(targetDirectory);
+            testsCount = fileEntries.Count();
+            foreach (string fileName in fileEntries)
+            {
+                if (fileName.EndsWith(".a"))
+                {
+                    int grade = compareResult(fileName, testResult);
+                    globalGrade += grade;
+                }
+                else
+                {
+                    testResult = runTest(fileName);
+                }
+            }
         }
     }
 }
