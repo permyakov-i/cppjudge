@@ -40,7 +40,7 @@ namespace tinycpp
         }
 
         // Запуск одного теста
-        public string runTest(string fileName)
+        public void runTest(string fileName, string expectedResult)
         {
             isOk = true;
             string result="";
@@ -120,10 +120,14 @@ namespace tinycpp
             {
                 MessageBox.Show("error:" + stderr);
             }
+           
             if (isOk)
-                return stdout;
+                testResult= stdout;
             else
-                return result;
+                testResult= result;
+
+            int grade = compareResult(expectedResult, testResult);
+            globalGrade += grade;
         }
 
         /* Скомпилировать тестируемую программу
@@ -236,7 +240,7 @@ namespace tinycpp
         {
             testAll(directoryPath);
             int grade = (globalGrade / (testsCount - 2)) * 100;
-            statWindow.Text += "Overall grade: " + grade.ToString();
+            statWindow.Text += "Overall grade: " + grade.ToString() + "\n";
         }
 
         private void testAll(string targetDirectory)
@@ -244,17 +248,15 @@ namespace tinycpp
             // Тестировать
             string[] fileEntries = Directory.GetFiles(targetDirectory);
             testsCount = fileEntries.Count();
+            string prevFile = null;
             foreach (string fileName in fileEntries)
             {
-                if (fileName.EndsWith(".a"))
+                if (prevFile != null && !prevFile.EndsWith(".a"))
                 {
-                    int grade = compareResult(fileName, testResult);
-                    globalGrade += grade;
+                    runTest(prevFile,fileName);
                 }
-                else
-                {
-                    testResult = runTest(fileName);
-                }
+                prevFile = fileName;
+
             }
         }
     }
