@@ -43,6 +43,7 @@ namespace tinycpp
         public void runTest(string fileName, string expectedResult)
         {
             isOk = true;
+            bool timeout = true;
             string result="";
             // Прочитать файл теста
             string[] readText = File.ReadAllLines(fileName);
@@ -91,23 +92,22 @@ namespace tinycpp
             // Слушать поток
             proc.BeginErrorReadLine();
             proc.BeginOutputReadLine();
-            foreach (string s in readText)
-            {
-                proc.StandardInput.WriteLine(s);
-            }
             long memoryUsed = proc.PrivateMemorySize64; //считать память            
-            TimeSpan timeElapsed = sw.Elapsed; //считать время выполнения
-            // Убить процесс если время превышено
-            if (timeElapsed.TotalSeconds > timeLimit)
-            {
-                proc.Kill();
-            }
             // Убить процесс если память превышена
             if (memoryUsed > memoryLimit)
             {
                 proc.Kill();
             }
-            proc.WaitForExit();
+            foreach (string s in readText)
+            {
+                proc.StandardInput.WriteLine(s);          
+            }
+            timeout=proc.WaitForExit(timeLimit*1000);
+            //Убить процесс если время превышено
+            if (!timeout)
+            {
+                 proc.Kill();
+            }
             // Вывести ошибку памяти
             if (memoryUsed> memoryLimit)
             {
@@ -115,6 +115,7 @@ namespace tinycpp
                 statWindow.Text += result + " in test №" + currTest.ToString()+"\n";
                 isOk = false;
             }
+            TimeSpan timeElapsed = sw.Elapsed; //считать время выполнения
             // Вывести ошибку времени выполнения         
             if (timeElapsed.TotalSeconds > timeLimit)
             {
