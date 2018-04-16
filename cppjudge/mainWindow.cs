@@ -63,6 +63,11 @@ namespace tinycpp
             {
                 Int32.TryParse(timeLim.Text, out timeLimit);
             }
+            // Считать ограничение по памяти
+            if (memLimit.TextLength != 0)
+            {
+                Int32.TryParse(memLimit.Text, out memoryLimit);
+            }
 
             var errors = new StringBuilder();
             var output = new StringBuilder();
@@ -86,23 +91,24 @@ namespace tinycpp
             // Слушать поток
             proc.BeginErrorReadLine();
             proc.BeginOutputReadLine();
-            long memoryUsed = proc.PrivateMemorySize64; //считать память
-            
-            TimeSpan timeElapsed = sw.Elapsed; //считать время выполнения
             foreach (string s in readText)
             {
                 proc.StandardInput.WriteLine(s);
-            }      
+            }
+            long memoryUsed = proc.PrivateMemorySize64; //считать память            
+            TimeSpan timeElapsed = sw.Elapsed; //считать время выполнения
+            // Убить процесс если время превышено
             if (timeElapsed.TotalSeconds > timeLimit)
             {
                 proc.Kill();
             }
-            proc.WaitForExit();
-            // Проверка памяти процесса
-            if (memLimit.TextLength!=0)
+            // Убить процесс если память превышена
+            if (memoryUsed > memoryLimit)
             {
-                Int32.TryParse(memLimit.Text, out memoryLimit);
+                proc.Kill();
             }
+            proc.WaitForExit();
+            // Вывести ошибку памяти
             if (memoryUsed> memoryLimit)
             {
                 result = "[FAIL] Out of memory " + (memoryUsed/ 1024).ToString() + "KB used";
