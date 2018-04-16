@@ -58,6 +58,11 @@ namespace tinycpp
             proc.StartInfo.UseShellExecute = false;
             proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             proc.EnableRaisingEvents = true;
+            // Считать ограничение по времени
+            if (timeLim.TextLength != 0)
+            {
+                Int32.TryParse(timeLim.Text, out timeLimit);
+            }
 
             var errors = new StringBuilder();
             var output = new StringBuilder();
@@ -87,7 +92,11 @@ namespace tinycpp
             foreach (string s in readText)
             {
                 proc.StandardInput.WriteLine(s);
-            }         
+            }      
+            if (timeElapsed.TotalSeconds > timeLimit)
+            {
+                proc.Kill();
+            }
             proc.WaitForExit();
             // Проверка памяти процесса
             if (memLimit.TextLength!=0)
@@ -100,12 +109,7 @@ namespace tinycpp
                 statWindow.Text += result + " in test №" + currTest.ToString()+"\n";
                 isOk = false;
             }
-            // Проверка времени выполнения
-            
-            if (timeLim.TextLength!=0)
-            {
-                Int32.TryParse(timeLim.Text, out timeLimit);
-            }
+            // Вывести ошибку времени выполнения         
             if (timeElapsed.TotalSeconds > timeLimit)
             {
                 result = "[FAIL] Timeout " + timeElapsed.TotalSeconds.ToString() + " seconds";
@@ -248,15 +252,18 @@ namespace tinycpp
             // Тестировать
             string[] fileEntries = Directory.GetFiles(targetDirectory);
             testsCount = fileEntries.Count();
+            
             string prevFile = null;
             foreach (string fileName in fileEntries)
             {
                 if (prevFile != null && !prevFile.EndsWith(".a"))
                 {
+                    //System.Threading.ThreadStart starter = () => runTest(prevFile, fileName);
+                    //System.Threading.Thread thread = new System.Threading.Thread(starter);
+                    //thread.Start();
                     runTest(prevFile,fileName);
                 }
                 prevFile = fileName;
-
             }
         }
     }
