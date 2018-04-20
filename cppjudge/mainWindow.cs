@@ -13,22 +13,25 @@ using System.IO;
 using System.Collections;
 
 
-namespace tinycpp
+namespace cppjudge
 {
     public partial class mainWindowForm : Form
     {
         bool isOk = true; // флаг ошибки
         string CurrentFile;   // Текущий открытый файл
-        string testResult;   // Выход теста
+        string testResult;   // Выход теста      
         int globalGrade=0;  // Оценка
         int testsCount=0;   // Количество тестов
         int currTest = 1; // Номер текущего теста
         int timeLimit = 150;
         int memoryLimit = 268435456; // Ограничение памяти
-        string directoryPath = ""; // Путь к папке с тестами
+        string timeLim = ""; // Поле времени
+        string memLimit = ""; // Поле памяти
+        string compilerPath = ""; // Поле пути к компилятору
+        string directoryPath = ""; // Путь к папке с тестами       
         public mainWindowForm()
         {
-            InitializeComponent();        
+            InitializeComponent();
             //Скомпилировать программу
         }
 
@@ -45,6 +48,8 @@ namespace tinycpp
             isOk = true;
             bool timeout = true;
             string result="";
+            // Загрузить конфигурацию
+            loadConfig();
             // Прочитать файл теста
             string[] readText = File.ReadAllLines(fileName);
 
@@ -60,14 +65,14 @@ namespace tinycpp
             proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             proc.EnableRaisingEvents = true;
             // Считать ограничение по времени
-            if (timeLim.TextLength != 0)
+            if (timeLim.Length != 0)
             {
-                Int32.TryParse(timeLim.Text, out timeLimit);
+                Int32.TryParse(timeLim, out timeLimit);
             }
             // Считать ограничение по памяти
-            if (memLimit.TextLength != 0)
+            if (memLimit.Length != 0)
             {
-                Int32.TryParse(memLimit.Text, out memoryLimit);
+                Int32.TryParse(memLimit, out memoryLimit);
             }
 
             var errors = new StringBuilder();
@@ -145,9 +150,10 @@ namespace tinycpp
          */
         public void compileCode ()
         {
+            loadConfig();
             string exeName = Path.GetFileNameWithoutExtension(CurrentFile);
             Process proc = new Process();
-            proc.StartInfo.FileName = @compilerPath.Text;
+            proc.StartInfo.FileName = @compilerPath;
             proc.StartInfo.Arguments = CurrentFile + " -o" + exeName;
             proc.StartInfo.CreateNoWindow = false;
             proc.StartInfo.RedirectStandardError = true;
@@ -272,6 +278,21 @@ namespace tinycpp
                 }
                 prevFile = fileName;
             }
+        }
+
+        private void btnConfig_Click(object sender, EventArgs e)
+        {
+            Config configForm = new Config(this);
+            configForm.Show();
+        }
+
+        private void loadConfig()
+        {
+            string startupPath = Environment.CurrentDirectory;
+            string[] lines = System.IO.File.ReadAllLines(@startupPath + "//Config.txt");
+            memLimit = lines[0];
+            timeLim = lines[1];
+            compilerPath = lines[2];
         }
     }
 }

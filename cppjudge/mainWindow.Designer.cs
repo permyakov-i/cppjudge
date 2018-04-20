@@ -1,4 +1,4 @@
-﻿namespace tinycpp
+﻿namespace cppjudge
 {
     partial class mainWindowForm
     {
@@ -36,13 +36,8 @@
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.folderItems = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.memLimit = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.timeLim = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.compilerPath = new System.Windows.Forms.TextBox();
             this.testBtn = new System.Windows.Forms.Button();
+            this.btnConfig = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // compileFile
@@ -103,56 +98,6 @@
             this.label1.Size = new System.Drawing.Size(0, 13);
             this.label1.TabIndex = 6;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 52);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(80, 13);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Лимит памяти";
-            // 
-            // memLimit
-            // 
-            this.memLimit.Location = new System.Drawing.Point(12, 68);
-            this.memLimit.Name = "memLimit";
-            this.memLimit.Size = new System.Drawing.Size(236, 20);
-            this.memLimit.TabIndex = 8;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 92);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(152, 13);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "Лимит времени выполнения";
-            // 
-            // timeLim
-            // 
-            this.timeLim.Location = new System.Drawing.Point(12, 108);
-            this.timeLim.Name = "timeLim";
-            this.timeLim.Size = new System.Drawing.Size(237, 20);
-            this.timeLim.TabIndex = 10;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 135);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(109, 13);
-            this.label4.TabIndex = 11;
-            this.label4.Text = "Путь к компилятору";
-            // 
-            // compilerPath
-            // 
-            this.compilerPath.Location = new System.Drawing.Point(12, 152);
-            this.compilerPath.Multiline = true;
-            this.compilerPath.Name = "compilerPath";
-            this.compilerPath.Size = new System.Drawing.Size(236, 35);
-            this.compilerPath.TabIndex = 12;
-            this.compilerPath.Text = "C:/Program Files/mingw-w64/x86_64-7.3.0-posix-seh-rt_v5-rev0/mingw64/bin/g++";
-            // 
             // testBtn
             // 
             this.testBtn.Location = new System.Drawing.Point(140, 333);
@@ -163,18 +108,23 @@
             this.testBtn.UseVisualStyleBackColor = true;
             this.testBtn.Click += new System.EventHandler(this.testBtn_Click);
             // 
+            // btnConfig
+            // 
+            this.btnConfig.Location = new System.Drawing.Point(12, 271);
+            this.btnConfig.Name = "btnConfig";
+            this.btnConfig.Size = new System.Drawing.Size(121, 23);
+            this.btnConfig.TabIndex = 14;
+            this.btnConfig.Text = "Настройки";
+            this.btnConfig.UseVisualStyleBackColor = true;
+            this.btnConfig.Click += new System.EventHandler(this.btnConfig_Click);
+            // 
             // mainWindowForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(513, 374);
+            this.Controls.Add(this.btnConfig);
             this.Controls.Add(this.testBtn);
-            this.Controls.Add(this.compilerPath);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.timeLim);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.memLimit);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.folderItems);
             this.Controls.Add(this.statWindow);
@@ -198,13 +148,8 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.ComboBox folderItems;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox memLimit;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox timeLim;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox compilerPath;
         private System.Windows.Forms.Button testBtn;
+        private System.Windows.Forms.Button btnConfig;
     }
 }
 
