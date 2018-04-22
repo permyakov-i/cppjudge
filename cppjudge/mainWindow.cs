@@ -20,8 +20,8 @@ namespace cppjudge
         bool isOk = true; // флаг ошибки
         string CurrentFile;   // Текущий открытый файл
         string testResult;   // Выход теста      
-        int globalGrade=0;  // Оценка
-        int testsCount=0;   // Количество тестов
+        int globalGrade = 0;  // Оценка
+        int testsCount = 0;   // Количество тестов
         int currTest = 1; // Номер текущего теста
         int timeLimit = 150;
         int memoryLimit = 268435456; // Ограничение памяти
@@ -47,7 +47,7 @@ namespace cppjudge
         {
             isOk = true;
             bool timeout = true;
-            string result="";
+            string result = "";
             // Загрузить конфигурацию
             loadConfig();
             // Прочитать файл теста
@@ -80,16 +80,18 @@ namespace cppjudge
             var hadErrors = false;
 
             // Получить вывод
-            proc.OutputDataReceived += (s, d) => {
+            proc.OutputDataReceived += (s, d) =>
+            {
                 output.Append(d.Data);
             };
 
             // Получить ошибки
-            proc.ErrorDataReceived += (s, d) => {
-            if (!hadErrors)
+            proc.ErrorDataReceived += (s, d) =>
             {
-                hadErrors = !String.IsNullOrEmpty(d.Data);
-            }
+                if (!hadErrors)
+                {
+                    hadErrors = !String.IsNullOrEmpty(d.Data);
+                }
                 errors.Append(d.Data);
             };
             Stopwatch sw = Stopwatch.StartNew();
@@ -105,19 +107,19 @@ namespace cppjudge
             }
             foreach (string s in readText)
             {
-                proc.StandardInput.WriteLine(s);          
+                proc.StandardInput.WriteLine(s);
             }
-            timeout=proc.WaitForExit(timeLimit*1000);
+            timeout = proc.WaitForExit(timeLimit * 1000);
             //Убить процесс если время превышено
             if (!timeout)
             {
-                 proc.Kill();
+                proc.Kill();
             }
             // Вывести ошибку памяти
-            if (memoryUsed> memoryLimit)
+            if (memoryUsed > memoryLimit)
             {
-                result = "[FAIL] Out of memory " + (memoryUsed/ 1024).ToString() + "KB used";
-                statWindow.Text += result + " in test №" + currTest.ToString()+"\n";
+                result = "[FAIL] Out of memory " + (memoryUsed / 1024).ToString() + "KB used";
+                statWindow.Text += result + " in test №" + currTest.ToString() + "\n";
                 isOk = false;
             }
             TimeSpan timeElapsed = sw.Elapsed; //считать время выполнения
@@ -136,11 +138,11 @@ namespace cppjudge
             {
                 MessageBox.Show("error:" + stderr);
             }
-           
+
             if (isOk)
-                testResult= stdout;
+                testResult = stdout;
             else
-                testResult= result;
+                testResult = result;
 
             int grade = compareResult(expectedResult, testResult);
             globalGrade += grade;
@@ -148,7 +150,7 @@ namespace cppjudge
 
         /* Скомпилировать тестируемую программу
          */
-        public void compileCode ()
+        public void compileCode()
         {
             loadConfig();
             string exeName = Path.GetFileNameWithoutExtension(CurrentFile);
@@ -167,12 +169,14 @@ namespace cppjudge
             var hadErrors = false;
 
             // Получить вывод
-            proc.OutputDataReceived += (s, d) => {
+            proc.OutputDataReceived += (s, d) =>
+            {
                 output.Append(d.Data);
             };
 
             // Получить ошибки
-            proc.ErrorDataReceived += (s, d) => {
+            proc.ErrorDataReceived += (s, d) =>
+            {
                 if (!hadErrors)
                 {
                     hadErrors = !String.IsNullOrEmpty(d.Data);
@@ -192,7 +196,8 @@ namespace cppjudge
             if (proc.ExitCode != 0 || hadErrors)
             {
                 MessageBox.Show("error:" + stderr);
-            }else
+            }
+            else
             {
                 MessageBox.Show("Compilation successful");
             }
@@ -211,18 +216,18 @@ namespace cppjudge
         private void openTests_Click(object sender, EventArgs e)
         {
             statWindow.Clear();
-
+            folderBrowserDialog1.RootFolder = Environment.SpecialFolder.MyComputer;
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 directoryPath = folderBrowserDialog1.SelectedPath;
+                ProcessDirectory(directoryPath);
             }
-            ProcessDirectory(directoryPath);
         }
 
         // Обработка тестов в папке
         public void ProcessDirectory(string targetDirectory)
         {
-            folderItems.Items.Clear();
+            //folderItems.Items.Clear();
             // Process the list of files found in thedirectory.
             string[] fileEntries = Directory.GetFiles(targetDirectory);
             foreach (string fileName in fileEntries)
@@ -239,7 +244,7 @@ namespace cppjudge
             string[] readText = File.ReadAllLines(fileName);
             foreach (string s in readText)
             {
-                if (result==s)
+                if (result == s)
                 {
                     grade++;
                 }
@@ -250,7 +255,7 @@ namespace cppjudge
         // Добавление файлов в виджет
         public void ProcessFile(string path)
         {
-            folderItems.Items.Add(path);
+            //folderItems.Items.Add(path);
         }
 
         private void testBtn_Click(object sender, EventArgs e)
@@ -265,7 +270,7 @@ namespace cppjudge
             // Тестировать
             string[] fileEntries = Directory.GetFiles(targetDirectory);
             testsCount = fileEntries.Count();
-            
+
             string prevFile = null;
             foreach (string fileName in fileEntries)
             {
@@ -274,7 +279,7 @@ namespace cppjudge
                     //System.Threading.ThreadStart starter = () => runTest(prevFile, fileName);
                     //System.Threading.Thread thread = new System.Threading.Thread(starter);
                     //thread.Start();
-                    runTest(prevFile,fileName);
+                    runTest(prevFile, fileName);
                 }
                 prevFile = fileName;
             }
@@ -294,5 +299,78 @@ namespace cppjudge
             timeLim = lines[1];
             compilerPath = lines[2];
         }
+
+        DirectoryInfo directoryInfo = new DirectoryInfo("D:\\");
+        private void mainWindowForm_Load(object sender, EventArgs e)
+        {
+
+            PopulateTreeView();
+
+        }
+        private void PopulateTreeView()
+        {
+            TreeNode rootNode;
+
+            DirectoryInfo info = new DirectoryInfo(@"../..");
+            if (info.Exists)
+            {
+                rootNode = new TreeNode(info.Name);
+                rootNode.Tag = info;
+                GetDirectories(info.GetDirectories(), rootNode);
+                testFolders.Nodes.Add(rootNode);
+            }
+        }
+
+        private void GetDirectories(DirectoryInfo[] subDirs, TreeNode nodeToAddTo)
+        {
+            TreeNode aNode;
+            DirectoryInfo[] subSubDirs;
+            foreach (DirectoryInfo subDir in subDirs)
+            {
+                aNode = new TreeNode(subDir.Name, 0, 0);
+                aNode.Tag = subDir;
+                aNode.ImageKey = "folder";
+                subSubDirs = subDir.GetDirectories();
+                if (subSubDirs.Length != 0)
+                {
+                    GetDirectories(subSubDirs, aNode);
+                }
+                nodeToAddTo.Nodes.Add(aNode);
+            }
+        }
+
+        void testFolders_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            TreeNode newSelected = e.Node;
+            listView1.Items.Clear();
+            DirectoryInfo nodeDirInfo = (DirectoryInfo)newSelected.Tag;
+            ListViewItem.ListViewSubItem[] subItems;
+            ListViewItem item = null;
+
+            foreach (DirectoryInfo dir in nodeDirInfo.GetDirectories())
+            {
+                item = new ListViewItem(dir.Name, 0);
+                subItems = new ListViewItem.ListViewSubItem[]
+                          {new ListViewItem.ListViewSubItem(item, "Directory"),
+                   new ListViewItem.ListViewSubItem(item,
+                dir.LastAccessTime.ToShortDateString())};
+                item.SubItems.AddRange(subItems);
+                listView1.Items.Add(item);
+            }
+            foreach (FileInfo file in nodeDirInfo.GetFiles())
+            {
+                item = new ListViewItem(file.Name, 1);
+                subItems = new ListViewItem.ListViewSubItem[]
+                          { new ListViewItem.ListViewSubItem(item, "File"),
+                   new ListViewItem.ListViewSubItem(item,
+                file.LastAccessTime.ToShortDateString())};
+
+                item.SubItems.AddRange(subItems);
+                listView1.Items.Add(item);
+            }
+
+            listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
     }
 }
