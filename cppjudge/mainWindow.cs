@@ -212,16 +212,6 @@ namespace cppjudge
             }
         }
 
-        // Обработчик кнопки открытия тестов
-        private void openTests_Click(object sender, EventArgs e)
-        {
-            statWindow.Clear();
-            folderBrowserDialog1.RootFolder = Environment.SpecialFolder.MyComputer;
-            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
-            {
-                directoryPath = folderBrowserDialog1.SelectedPath;
-            }
-        }
 
         // Проверка результатов тестирования
         public int compareResult(string fileName, string result)
@@ -239,12 +229,7 @@ namespace cppjudge
             return grade;
         }
 
-        // Добавление файлов в виджет
-        public void ProcessFile(string path)
-        {
-            //folderItems.Items.Add(path);
-        }
-
+        // Обработчик кнопки тестирования
         private void testBtn_Click(object sender, EventArgs e)
         {
             directoryPath = Environment.CurrentDirectory.Replace(Path.GetFileName(Environment.CurrentDirectory),"") + testFolders.SelectedNode.FullPath;          
@@ -253,6 +238,7 @@ namespace cppjudge
             statWindow.Text += "Overall grade: " + grade.ToString() + "\n";
         }
 
+        // Тестировать все тесты
         private void testAll(string targetDirectory)
         {
             // Тестировать
@@ -273,12 +259,14 @@ namespace cppjudge
             }
         }
 
+        // Обработчик кнопки настроек
         private void btnConfig_Click(object sender, EventArgs e)
         {
             Config configForm = new Config(this);
             configForm.Show();
         }
 
+        // Загрузка конфигурации из файла
         private void loadConfig()
         {
             string startupPath = Environment.CurrentDirectory;
@@ -292,6 +280,8 @@ namespace cppjudge
         {
             PopulateTreeView();
         }
+        
+        // Загрузка интерфейса
         DirectoryInfo info = new DirectoryInfo(@Environment.CurrentDirectory);
         private void PopulateTreeView()
         {
@@ -305,6 +295,7 @@ namespace cppjudge
             }
         }
 
+        // Получение папок
         private void GetDirectories(DirectoryInfo[] subDirs, TreeNode nodeToAddTo)
         {
             TreeNode aNode;
@@ -323,6 +314,7 @@ namespace cppjudge
             }
         }
 
+        // Обработка виджета, отображающего содержимое папки
         void testFolders_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             TreeNode newSelected = e.Node;
