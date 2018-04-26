@@ -220,19 +220,6 @@ namespace cppjudge
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 directoryPath = folderBrowserDialog1.SelectedPath;
-                ProcessDirectory(directoryPath);
-            }
-        }
-
-        // Обработка тестов в папке
-        public void ProcessDirectory(string targetDirectory)
-        {
-            //folderItems.Items.Clear();
-            // Process the list of files found in thedirectory.
-            string[] fileEntries = Directory.GetFiles(targetDirectory);
-            foreach (string fileName in fileEntries)
-            {
-                ProcessFile(fileName);
             }
         }
 
@@ -260,6 +247,7 @@ namespace cppjudge
 
         private void testBtn_Click(object sender, EventArgs e)
         {
+            directoryPath = Environment.CurrentDirectory.Replace(Path.GetFileName(Environment.CurrentDirectory),"") + testFolders.SelectedNode.FullPath;          
             testAll(directoryPath);
             int grade = (globalGrade / (testsCount - 2)) * 100;
             statWindow.Text += "Overall grade: " + grade.ToString() + "\n";
@@ -300,18 +288,14 @@ namespace cppjudge
             compilerPath = lines[2];
         }
 
-        DirectoryInfo directoryInfo = new DirectoryInfo("D:\\");
         private void mainWindowForm_Load(object sender, EventArgs e)
         {
-
             PopulateTreeView();
-
         }
+        DirectoryInfo info = new DirectoryInfo(@Environment.CurrentDirectory);
         private void PopulateTreeView()
         {
             TreeNode rootNode;
-
-            DirectoryInfo info = new DirectoryInfo(@"../..");
             if (info.Exists)
             {
                 rootNode = new TreeNode(info.Name);

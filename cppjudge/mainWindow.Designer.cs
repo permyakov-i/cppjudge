@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainWindowForm));
             this.compileFile = new System.Windows.Forms.Button();
-            this.openTests = new System.Windows.Forms.Button();
             this.openFile = new System.Windows.Forms.Button();
             this.statWindow = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -61,16 +60,6 @@
             this.compileFile.Text = "Компилировать";
             this.compileFile.UseVisualStyleBackColor = true;
             this.compileFile.Click += new System.EventHandler(this.compileFile_Click);
-            // 
-            // openTests
-            // 
-            this.openTests.Location = new System.Drawing.Point(340, 304);
-            this.openTests.Name = "openTests";
-            this.openTests.Size = new System.Drawing.Size(121, 23);
-            this.openTests.TabIndex = 1;
-            this.openTests.Text = "Выбрать тесты";
-            this.openTests.UseVisualStyleBackColor = true;
-            this.openTests.Click += new System.EventHandler(this.openTests_Click);
             // 
             // openFile
             // 
@@ -196,7 +185,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.statWindow);
             this.Controls.Add(this.openFile);
-            this.Controls.Add(this.openTests);
             this.Controls.Add(this.compileFile);
             this.Name = "mainWindowForm";
             this.Text = "Тестер олимпиад";
@@ -213,7 +201,6 @@
         #endregion
 
         private System.Windows.Forms.Button compileFile;
-        private System.Windows.Forms.Button openTests;
         private System.Windows.Forms.Button openFile;
         private System.Windows.Forms.TextBox statWindow;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
