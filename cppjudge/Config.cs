@@ -24,7 +24,11 @@ namespace cppjudge
    
         private void Config_Load(object sender, EventArgs e)
         {
-
+            string startupPath = Environment.CurrentDirectory;
+            string[] lines = System.IO.File.ReadAllLines(@startupPath + "//Config.txt");
+            memLimit.Text = lines[0];
+            timeLim.Text = lines[1];
+            compilerPath.Text = lines[2];
         }
 
         private void saveConfig_Click(object sender, EventArgs e)
