@@ -35,6 +35,11 @@
             this.memLimit = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.saveConfig = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.testNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.testGrade = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // compilerPath
@@ -91,7 +96,7 @@
             // 
             // saveConfig
             // 
-            this.saveConfig.Location = new System.Drawing.Point(12, 167);
+            this.saveConfig.Location = new System.Drawing.Point(12, 312);
             this.saveConfig.Name = "saveConfig";
             this.saveConfig.Size = new System.Drawing.Size(403, 23);
             this.saveConfig.TabIndex = 19;
@@ -99,11 +104,50 @@
             this.saveConfig.UseVisualStyleBackColor = true;
             this.saveConfig.Click += new System.EventHandler(this.saveConfig_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 149);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(93, 13);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "Оценки за тесты";
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.testNumber,
+            this.testGrade});
+            this.dataGridView1.Location = new System.Drawing.Point(12, 165);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(403, 141);
+            this.dataGridView1.TabIndex = 21;
+            this.dataGridView1.UserAddedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridView1_UserAddedRow);
+            // 
+            // testNumber
+            // 
+            this.testNumber.Frozen = true;
+            this.testNumber.HeaderText = "Номер теста";
+            this.testNumber.Name = "testNumber";
+            this.testNumber.ReadOnly = true;
+            this.testNumber.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.testNumber.Width = 180;
+            // 
+            // testGrade
+            // 
+            this.testGrade.Frozen = true;
+            this.testGrade.HeaderText = "Оценка";
+            this.testGrade.Name = "testGrade";
+            this.testGrade.Width = 180;
+            // 
             // Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(427, 347);
+            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.saveConfig);
             this.Controls.Add(this.compilerPath);
             this.Controls.Add(this.label4);
@@ -114,6 +158,7 @@
             this.Name = "Config";
             this.Text = "Config";
             this.Load += new System.EventHandler(this.Config_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -128,5 +173,9 @@
         private System.Windows.Forms.TextBox memLimit;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button saveConfig;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn testNumber;
+        private System.Windows.Forms.DataGridViewTextBoxColumn testGrade;
     }
 }
