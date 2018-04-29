@@ -22,13 +22,14 @@ namespace cppjudge
         string testResult;   // Выход теста      
         int globalGrade = 0;  // Оценка
         int testsCount = 0;   // Количество тестов
-        int currTest = 1; // Номер текущего теста
+        int currTest = 0; // Номер текущего теста
         int timeLimit = 150;
         int memoryLimit = 268435456; // Ограничение памяти
         string timeLim = ""; // Поле времени
         string memLimit = ""; // Поле памяти
         string compilerPath = ""; // Поле пути к компилятору
         string directoryPath = ""; // Путь к папке с тестами       
+        string[] testGrades = new string[1000]; // Оценки за тесты
         public mainWindowForm()
         {
             InitializeComponent();
@@ -40,6 +41,62 @@ namespace cppjudge
         {
             compileCode();
             statWindow.Clear();
+        }
+
+
+        /* Скомпилировать тестируемую программу
+         */
+        public void compileCode()
+        {
+            loadConfig();
+            string exeName = Path.GetFileNameWithoutExtension(CurrentFile);
+            Process proc = new Process();
+            proc.StartInfo.FileName = @compilerPath;
+            proc.StartInfo.Arguments = CurrentFile + " -o" + exeName;
+            proc.StartInfo.CreateNoWindow = false;
+            proc.StartInfo.RedirectStandardError = true;
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.StartInfo.UseShellExecute = false;
+            proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            proc.EnableRaisingEvents = true;
+
+            var errors = new StringBuilder();
+            var output = new StringBuilder();
+            var hadErrors = false;
+
+            // Получить вывод
+            proc.OutputDataReceived += (s, d) =>
+            {
+                output.Append(d.Data);
+            };
+
+            // Получить ошибки
+            proc.ErrorDataReceived += (s, d) =>
+            {
+                if (!hadErrors)
+                {
+                    hadErrors = !String.IsNullOrEmpty(d.Data);
+                }
+                errors.Append(d.Data);
+            };
+
+            proc.Start();
+            // Слушать поток
+            proc.BeginErrorReadLine();
+            proc.BeginOutputReadLine();
+
+            proc.WaitForExit();
+            string stdout = output.ToString();
+            string stderr = errors.ToString();
+
+            if (proc.ExitCode != 0 || hadErrors)
+            {
+                MessageBox.Show("error:" + stderr);
+            }
+            else
+            {
+                MessageBox.Show("Compilation successful");
+            }
         }
 
         // Запуск одного теста
@@ -133,7 +190,6 @@ namespace cppjudge
             // Вывод
             string stdout = output.ToString();
             string stderr = errors.ToString();
-            currTest++;
             if (proc.ExitCode != 0 || hadErrors)
             {
                 MessageBox.Show("error:" + stderr);
@@ -144,63 +200,9 @@ namespace cppjudge
             else
                 testResult = result;
 
-            int grade = compareResult(expectedResult, testResult);
+            int grade = compareResult(expectedResult, testResult) * Int32.Parse(testGrades[currTest]);
             globalGrade += grade;
-        }
-
-        /* Скомпилировать тестируемую программу
-         */
-        public void compileCode()
-        {
-            loadConfig();
-            string exeName = Path.GetFileNameWithoutExtension(CurrentFile);
-            Process proc = new Process();
-            proc.StartInfo.FileName = @compilerPath;
-            proc.StartInfo.Arguments = CurrentFile + " -o" + exeName;
-            proc.StartInfo.CreateNoWindow = false;
-            proc.StartInfo.RedirectStandardError = true;
-            proc.StartInfo.RedirectStandardOutput = true;
-            proc.StartInfo.UseShellExecute = false;
-            proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            proc.EnableRaisingEvents = true;
-
-            var errors = new StringBuilder();
-            var output = new StringBuilder();
-            var hadErrors = false;
-
-            // Получить вывод
-            proc.OutputDataReceived += (s, d) =>
-            {
-                output.Append(d.Data);
-            };
-
-            // Получить ошибки
-            proc.ErrorDataReceived += (s, d) =>
-            {
-                if (!hadErrors)
-                {
-                    hadErrors = !String.IsNullOrEmpty(d.Data);
-                }
-                errors.Append(d.Data);
-            };
-
-            proc.Start();
-            // Слушать поток
-            proc.BeginErrorReadLine();
-            proc.BeginOutputReadLine();
-
-            proc.WaitForExit();
-            string stdout = output.ToString();
-            string stderr = errors.ToString();
-
-            if (proc.ExitCode != 0 || hadErrors)
-            {
-                MessageBox.Show("error:" + stderr);
-            }
-            else
-            {
-                MessageBox.Show("Compilation successful");
-            }
+            currTest++;
         }
 
         // Обработчик кнопки открытия файла
@@ -234,7 +236,12 @@ namespace cppjudge
         {
             directoryPath = Environment.CurrentDirectory.Replace(Path.GetFileName(Environment.CurrentDirectory),"") + testFolders.SelectedNode.FullPath;          
             testAll(directoryPath);
-            int grade = (globalGrade / (testsCount - 2)) * 100;
+            int maxGrade = 0;
+            for (int i=0;i< testsCount / 2;i++ )
+            {
+                maxGrade += Int32.Parse(testGrades[i]);
+            }
+            double grade = ((double)globalGrade / (double)maxGrade) * 100;
             statWindow.Text += "Overall grade: " + grade.ToString() + "\n";
         }
 
@@ -274,10 +281,18 @@ namespace cppjudge
             memLimit = lines[0];
             timeLim = lines[1];
             compilerPath = lines[2];
+ 
+            int i = 0;
+            foreach (string line in lines.Skip(3))
+            {
+                testGrades[i] = line.Substring(1);
+                i++;
+            }
         }
 
         private void mainWindowForm_Load(object sender, EventArgs e)
         {
+            loadConfig();
             PopulateTreeView();
         }
         
