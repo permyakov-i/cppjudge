@@ -1,0 +1,7 @@
+324523452
+15
+C:/Program Files/mingw-w64/x86_64-7.3.0-posix-seh-rt_v5-rev0/mingw64/bin/g++
+1 8
+2 11
+3 2
+4 12
