@@ -248,6 +248,10 @@ namespace cppjudge
         // Тестировать все тесты
         private void testAll(string targetDirectory)
         {
+            int procCount = Environment.ProcessorCount;
+            System.Threading.ThreadPool.SetMaxThreads(procCount, procCount);
+            currTest = 0;
+            globalGrade = 0;
             // Тестировать
             string[] fileEntries = Directory.GetFiles(targetDirectory);
             testsCount = fileEntries.Count();
@@ -257,10 +261,10 @@ namespace cppjudge
             {
                 if (prevFile != null && !prevFile.EndsWith(".a"))
                 {
-                    //System.Threading.ThreadStart starter = () => runTest(prevFile, fileName);
-                    //System.Threading.Thread thread = new System.Threading.Thread(starter);
-                    //thread.Start();
-                    runTest(prevFile, fileName);
+                    System.Threading.ThreadStart starter = () => runTest(prevFile, fileName);
+                    System.Threading.Thread thread = new System.Threading.Thread(starter);
+                    thread.Start();
+                    thread.Join();
                 }
                 prevFile = fileName;
             }
