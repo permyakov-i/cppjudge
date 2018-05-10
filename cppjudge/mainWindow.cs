@@ -49,6 +49,7 @@ namespace cppjudge
         public void compileCode()
         {
             loadConfig();
+            preprocessing(CurrentFile);
             string exeName = Path.GetFileNameWithoutExtension(CurrentFile);
             Process proc = new Process();
             proc.StartInfo.FileName = @compilerPath;
@@ -393,6 +394,45 @@ namespace cppjudge
             }
 
             listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
+        // Предварительная обработка файла с кодом
+        void preprocessing(string codeFile)
+        {
+            int id = 0;
+            string[] code = System.IO.File.ReadAllLines(codeFile);
+            foreach (string line in code)
+            {
+                if (line.Contains("system(\"pause\")") || line.Contains("system (\"pause\")"))
+                {
+                    code[id]=code[id].Replace("system(\"pause\")", "");
+                    code[id] = code[id].Replace("system (\"pause\")", "");
+                }
+                if (line.Contains("_tmain"))
+                {
+                    code[id] = code[id].Replace("_tmain", "main");
+                }
+                if (line.Contains("_tmain"))
+                {
+                    code[id] = code[id].Replace("_tmain", "main");
+                }
+                if (line.Contains("_TCHAR"))
+                {
+                    code[id] = code[id].Replace("_TCHAR", "char");
+                }
+                if (code.Length >= id + 2)
+                {
+                    if (code[id + 1].Contains("return"))
+                    {
+                        if (code[id].Contains("_getch"))
+                        {
+                            code[id] = code[id].Replace("_getch()", "");
+                        }
+                    }
+                }
+                id++;
+            }
+            System.IO.File.WriteAllLines(codeFile,code);
         }
 
     }
