@@ -234,39 +234,67 @@ namespace cppjudge
         // Обработчик кнопки тестирования
         private void testBtn_Click(object sender, EventArgs e)
         {
-            directoryPath = Environment.CurrentDirectory.Replace(Path.GetFileName(Environment.CurrentDirectory),"") + testFolders.SelectedNode.FullPath;          
-            testAll(directoryPath);
-            int maxGrade = 0;
-            for (int i=0;i< testsCount / 2;i++ )
+
+            if (CurrentFile != null && testFolders.SelectedNode != null)
             {
-                maxGrade += Int32.Parse(testGrades[i]);
+                statWindow.Clear();
+                directoryPath = Environment.CurrentDirectory.Replace(Path.GetFileName(Environment.CurrentDirectory), "") + testFolders.SelectedNode.FullPath;
+                testAll(directoryPath);
+                int maxGrade = 0;
+                if (testsCount % 2 == 0)
+                {
+                    for (int i = 0; i < testsCount / 2; i++)
+                    {
+                        maxGrade += Int32.Parse(testGrades[i]);
+                    }
+                    double grade = ((double)globalGrade / (double)maxGrade) * 100;
+                    statWindow.Text += "\n Overall grade: " + grade.ToString() + "\n";
+                } else
+                {
+                    statWindow.Text += "\n Testing failed";
+                }
+            }else
+            {
+                if(CurrentFile == null)
+                    MessageBox.Show("error: Source code is not open");
+                else
+                    MessageBox.Show("error: No folder chosen");
+                statWindow.Text += "\n Testing failed";
             }
-            double grade = ((double)globalGrade / (double)maxGrade) * 100;
-            statWindow.Text += "Overall grade: " + grade.ToString() + "\n";
         }
 
         // Тестировать все тесты
         private void testAll(string targetDirectory)
         {
-            int procCount = Environment.ProcessorCount;
-            System.Threading.ThreadPool.SetMaxThreads(procCount, procCount);
+            int procCount = Environment.ProcessorCount; // Получить количество ядер процессора
+            System.Threading.ThreadPool.SetMaxThreads(procCount, procCount); // Задать максимум активных потоков
             currTest = 0;
             globalGrade = 0;
             // Тестировать
             string[] fileEntries = Directory.GetFiles(targetDirectory);
             testsCount = fileEntries.Count();
-
-            string prevFile = null;
-            foreach (string fileName in fileEntries)
+            if (testsCount < 2)
             {
-                if (prevFile != null && !prevFile.EndsWith(".a"))
+                MessageBox.Show("error: There is not enough files in this folder");
+            }
+            else if (testsCount % 2 != 0)
+            {
+                MessageBox.Show("error: Not all of the tests have answer files");
+            }
+            else
+            {
+                string prevFile = null;
+                foreach (string fileName in fileEntries)
                 {
-                    System.Threading.ThreadStart starter = () => runTest(prevFile, fileName);
-                    System.Threading.Thread thread = new System.Threading.Thread(starter);
-                    thread.Start();
-                    thread.Join();
+                    if (prevFile != null && !prevFile.EndsWith(".a"))
+                    {
+                        System.Threading.ThreadStart starter = () => runTest(prevFile, fileName);
+                        System.Threading.Thread thread = new System.Threading.Thread(starter);
+                        thread.Start();
+                        thread.Join();
+                    }
+                    prevFile = fileName;
                 }
-                prevFile = fileName;
             }
         }
 
