@@ -25,6 +25,7 @@ namespace cppjudge
         int currTest = 0; // Номер текущего теста
         int timeLimit = 150;
         int memoryLimit = 268435456; // Ограничение памяти
+        int folderNumber = 0;
         string message = "";
         string timeLim = ""; // Поле времени
         string memLimit = ""; // Поле памяти
@@ -247,8 +248,14 @@ namespace cppjudge
             else
                 testResult = result;
 
-            int grade = compareResult(expectedResult, testResult) * Int32.Parse(testGrades[currTest]);
-            message= " Test № "+ currTest + " Grade "+grade+" out of "+ testGrades[currTest]+ Environment.NewLine;
+            int grade = compareResult(expectedResult, testResult);
+            if (grade > 0)
+            {
+                message = " Test № " + currTest + " Passed "  + Environment.NewLine;
+            }else
+            {
+                message = " Test № " + currTest + " Failed " + Environment.NewLine;
+            }
             globalGrade += grade;
             currTest++;
         }
@@ -278,15 +285,14 @@ namespace cppjudge
                 compileCode();
                 directoryPath = Environment.CurrentDirectory.Replace(Path.GetFileName(Environment.CurrentDirectory), "") + testFolders.SelectedNode.FullPath;
                 testAll(directoryPath);
-                int maxGrade = 0;
                 if (testsCount % 2 == 0)
                 {
-                    for (int i = 0; i < testsCount / 2; i++)
-                    {
-                        maxGrade += Int32.Parse(testGrades[i]);
-                    }
-                    double grade = ((double)globalGrade / (double)maxGrade) * 100;
-                    statWindow.Text += "\n Overall grade: " + grade.ToString() + "%" + Environment.NewLine;
+                    Int32.TryParse(testFolders.SelectedNode.Text, out folderNumber);
+                    int testGrade = 0;
+                    Int32.TryParse(testGrades[folderNumber-1], out testGrade);
+                    double grade = ((double)globalGrade / ((double)testsCount / 2)) * testGrade;
+                    statWindow.Text += "\n Overall grade: " + grade.ToString() + " from "+ testGrade+ Environment.NewLine;
+                    folderNumber++;
                 } else
                 {
                     statWindow.Text += "\n Testing failed";
