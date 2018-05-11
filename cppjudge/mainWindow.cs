@@ -141,7 +141,7 @@ namespace cppjudge
             }
             else
             {
-                MessageBox.Show("Compilation successful");
+                statWindow.Text+="Compilation successful" + Environment.NewLine;
             }
         }
 
@@ -274,8 +274,8 @@ namespace cppjudge
         {            
             if (CurrentFile != null && testFolders.SelectedNode != null)
             {
-                compileCode();
                 statWindow.Clear();
+                compileCode();
                 directoryPath = Environment.CurrentDirectory.Replace(Path.GetFileName(Environment.CurrentDirectory), "") + testFolders.SelectedNode.FullPath;
                 testAll(directoryPath);
                 int maxGrade = 0;
