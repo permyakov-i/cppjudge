@@ -25,6 +25,7 @@ namespace cppjudge
         int currTest = 0; // Номер текущего теста
         int timeLimit = 150;
         int memoryLimit = 268435456; // Ограничение памяти
+        string message = "";
         string timeLim = ""; // Поле времени
         string memLimit = ""; // Поле памяти
         string compilerPath = ""; // Поле пути к компилятору
@@ -36,8 +37,11 @@ namespace cppjudge
             //Скомпилировать программу
             //Таймер автообновления
             loadFolderFiles();
-            System.Threading.TimerCallback tm = new System.Threading.TimerCallback(refresh);
-            System.Threading.Timer timer = new System.Threading.Timer(tm,null,0,10000);
+            System.Windows.Forms.Timer tm;
+            tm = new System.Windows.Forms.Timer();
+            tm.Tick += new EventHandler((o, e) => { refresh(null); });
+            tm.Interval = 5000;
+            tm.Start();
         }
 
         // Автообновление отображения содержимого папки
@@ -219,7 +223,7 @@ namespace cppjudge
             if (memoryUsed > memoryLimit)
             {
                 result = "[FAIL] Out of memory " + (memoryUsed / 1024).ToString() + "KB used";
-                statWindow.Text += result + " in test №" + currTest.ToString() + "\n";
+                message = result + " in test №" + currTest.ToString() + "\n";
                 isOk = false;
             }
             TimeSpan timeElapsed = sw.Elapsed; //считать время выполнения
@@ -227,7 +231,7 @@ namespace cppjudge
             if (timeElapsed.TotalSeconds > timeLimit)
             {
                 result = "[FAIL] Timeout " + timeElapsed.TotalSeconds.ToString() + " seconds";
-                statWindow.Text += result + " in test №" + currTest.ToString() + "\n";
+                message = result + " in test №" + currTest.ToString() + "\n";
                 isOk = false;
             }
             // Вывод
@@ -244,7 +248,7 @@ namespace cppjudge
                 testResult = result;
 
             int grade = compareResult(expectedResult, testResult) * Int32.Parse(testGrades[currTest]);
-            statWindow.Text += " Test № "+ currTest + " Grade "+grade+" out of "+ testGrades[currTest]+ Environment.NewLine;
+            message= " Test № "+ currTest + " Grade "+grade+" out of "+ testGrades[currTest]+ Environment.NewLine;
             globalGrade += grade;
             currTest++;
         }
@@ -326,6 +330,7 @@ namespace cppjudge
                         System.Threading.Thread thread = new System.Threading.Thread(starter);
                         thread.Start();
                         thread.Join();
+                        statWindow.Text += message;
                     }
                     prevFile = fileName;
                 }
