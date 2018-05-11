@@ -192,6 +192,7 @@
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3});
+            this.listView2.HideSelection = false;
             this.listView2.Location = new System.Drawing.Point(415, 26);
             this.listView2.MultiSelect = false;
             this.listView2.Name = "listView2";

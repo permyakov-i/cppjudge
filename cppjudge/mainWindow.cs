@@ -402,6 +402,11 @@ namespace cppjudge
 
         void loadFolderFiles()
         {
+            ListViewItem item= new ListViewItem();
+            if (listView2.SelectedItems.Count > 0)
+            {
+                item = listView2.SelectedItems[0];
+            }
             DirectoryInfo nodeDirInfo2 = new DirectoryInfo(Directory.GetCurrentDirectory());
             listView2.Items.Clear();
             ListViewItem.ListViewSubItem[] subItems2;
@@ -428,6 +433,11 @@ namespace cppjudge
                 item2.SubItems.AddRange(subItems2);
                 listView2.Items.Add(item2);
             }
+
+            int index=listView2.FindItemWithText(item.Text).Index;
+            if (listView2.Items.Count > 0 && item.Text!="")
+                listView2.Items[index].Selected = true;
+
 
             listView2.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
