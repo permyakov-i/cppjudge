@@ -202,6 +202,7 @@ namespace cppjudge
                 testResult = result;
 
             int grade = compareResult(expectedResult, testResult) * Int32.Parse(testGrades[currTest]);
+            statWindow.Text += " Test № "+ currTest + " Grade "+grade+" out of "+ testGrades[currTest]+ Environment.NewLine;
             globalGrade += grade;
             currTest++;
         }
@@ -249,7 +250,7 @@ namespace cppjudge
                         maxGrade += Int32.Parse(testGrades[i]);
                     }
                     double grade = ((double)globalGrade / (double)maxGrade) * 100;
-                    statWindow.Text += "\n Overall grade: " + grade.ToString() + "\n";
+                    statWindow.Text += "\n Overall grade: " + grade.ToString() + Environment.NewLine;
                 } else
                 {
                     statWindow.Text += "\n Testing failed";
@@ -419,6 +420,10 @@ namespace cppjudge
                 if (line.Contains("_TCHAR"))
                 {
                     code[id] = code[id].Replace("_TCHAR", "char");
+                }
+                if (line.Contains("#include <conio.h>"))
+                {
+                    code[id] = code[id].Replace("#include <conio.h>", "");
                 }
                 if (code.Length >= id + 2)
                 {
