@@ -35,6 +35,7 @@ namespace cppjudge
             InitializeComponent();
             //Скомпилировать программу
             //Таймер автообновления
+            loadFolderFiles();
             System.Threading.TimerCallback tm = new System.Threading.TimerCallback(refresh);
             System.Threading.Timer timer = new System.Threading.Timer(tm,null,0,10000);
         }
@@ -74,6 +75,7 @@ namespace cppjudge
 
                 listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
             }
+            loadFolderFiles();        
         }
 
         // Обработки кнопки компиляции
@@ -247,16 +249,6 @@ namespace cppjudge
             currTest++;
         }
 
-        // Обработчик кнопки открытия файла
-        private void openFile_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                CurrentFile = openFileDialog1.FileName;
-            }
-        }
-
-
         // Проверка результатов тестирования
         public int compareResult(string fileName, string result)
         {
@@ -290,7 +282,7 @@ namespace cppjudge
                         maxGrade += Int32.Parse(testGrades[i]);
                     }
                     double grade = ((double)globalGrade / (double)maxGrade) * 100;
-                    statWindow.Text += "\n Overall grade: " + grade.ToString() + Environment.NewLine;
+                    statWindow.Text += "\n Overall grade: " + grade.ToString() + "%" + Environment.NewLine;
                 } else
                 {
                     statWindow.Text += "\n Testing failed";
@@ -403,6 +395,38 @@ namespace cppjudge
             }
         }
 
+        void loadFolderFiles()
+        {
+            DirectoryInfo nodeDirInfo2 = new DirectoryInfo(Directory.GetCurrentDirectory());
+            listView2.Items.Clear();
+            ListViewItem.ListViewSubItem[] subItems2;
+            ListViewItem item2 = null;
+
+            foreach (DirectoryInfo dir in nodeDirInfo2.GetDirectories())
+            {
+                item2 = new ListViewItem(dir.Name, 0);
+                subItems2 = new ListViewItem.ListViewSubItem[]
+                          {new ListViewItem.ListViewSubItem(item2, "Directory"),
+                   new ListViewItem.ListViewSubItem(item2,
+                dir.LastAccessTime.ToShortDateString())};
+                item2.SubItems.AddRange(subItems2);
+                listView2.Items.Add(item2);
+            }
+            foreach (FileInfo file in nodeDirInfo2.GetFiles())
+            {
+                item2 = new ListViewItem(file.Name, 1);
+                subItems2 = new ListViewItem.ListViewSubItem[]
+                          { new ListViewItem.ListViewSubItem(item2, "File"),
+                   new ListViewItem.ListViewSubItem(item2,
+                file.LastAccessTime.ToShortDateString())};
+
+                item2.SubItems.AddRange(subItems2);
+                listView2.Items.Add(item2);
+            }
+
+            listView2.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
         // Обработка виджета, отображающего содержимое папки
         void testFolders_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
@@ -480,5 +504,18 @@ namespace cppjudge
             System.IO.File.WriteAllLines(codeFile,code);
         }
 
+        private void listView2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listView2.SelectedItems.Count > 0)
+            {
+                var item = listView2.SelectedItems[0];
+                CurrentFile = item.Text;
+            }
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

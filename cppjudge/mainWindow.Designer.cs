@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainWindowForm));
-            this.openFile = new System.Windows.Forms.Button();
             this.statWindow = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
@@ -47,28 +46,23 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.listView2 = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // openFile
-            // 
-            this.openFile.Location = new System.Drawing.Point(12, 333);
-            this.openFile.Name = "openFile";
-            this.openFile.Size = new System.Drawing.Size(146, 23);
-            this.openFile.TabIndex = 2;
-            this.openFile.Text = "Выбрать файл";
-            this.openFile.UseVisualStyleBackColor = true;
-            this.openFile.Click += new System.EventHandler(this.openFile_Click);
-            // 
             // statWindow
             // 
-            this.statWindow.Location = new System.Drawing.Point(473, 24);
+            this.statWindow.Location = new System.Drawing.Point(697, 26);
             this.statWindow.Multiline = true;
             this.statWindow.Name = "statWindow";
-            this.statWindow.Size = new System.Drawing.Size(277, 330);
+            this.statWindow.Size = new System.Drawing.Size(152, 278);
             this.statWindow.TabIndex = 3;
             // 
             // openFileDialog1
@@ -85,9 +79,9 @@
             // 
             // testBtn
             // 
-            this.testBtn.Location = new System.Drawing.Point(165, 333);
+            this.testBtn.Location = new System.Drawing.Point(697, 310);
             this.testBtn.Name = "testBtn";
-            this.testBtn.Size = new System.Drawing.Size(147, 23);
+            this.testBtn.Size = new System.Drawing.Size(152, 23);
             this.testBtn.TabIndex = 13;
             this.testBtn.Text = "Тестировать";
             this.testBtn.UseVisualStyleBackColor = true;
@@ -95,9 +89,9 @@
             // 
             // btnConfig
             // 
-            this.btnConfig.Location = new System.Drawing.Point(318, 333);
+            this.btnConfig.Location = new System.Drawing.Point(697, 335);
             this.btnConfig.Name = "btnConfig";
-            this.btnConfig.Size = new System.Drawing.Size(149, 23);
+            this.btnConfig.Size = new System.Drawing.Size(152, 23);
             this.btnConfig.TabIndex = 14;
             this.btnConfig.Text = "Настройки";
             this.btnConfig.UseVisualStyleBackColor = true;
@@ -111,7 +105,7 @@
             this.testFolders.Location = new System.Drawing.Point(0, 0);
             this.testFolders.Name = "testFolders";
             this.testFolders.SelectedImageIndex = 0;
-            this.testFolders.Size = new System.Drawing.Size(146, 303);
+            this.testFolders.Size = new System.Drawing.Size(115, 332);
             this.testFolders.TabIndex = 15;
             this.testFolders.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.testFolders_NodeMouseClick);
             // 
@@ -124,7 +118,7 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Location = new System.Drawing.Point(12, 24);
+            this.splitContainer1.Location = new System.Drawing.Point(12, 26);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -134,8 +128,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.listView1);
-            this.splitContainer1.Size = new System.Drawing.Size(455, 303);
-            this.splitContainer1.SplitterDistance = 146;
+            this.splitContainer1.Size = new System.Drawing.Size(397, 332);
+            this.splitContainer1.SplitterDistance = 115;
             this.splitContainer1.TabIndex = 16;
             // 
             // listView1
@@ -147,7 +141,7 @@
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(305, 303);
+            this.listView1.Size = new System.Drawing.Size(278, 332);
             this.listView1.SmallImageList = this.imageList1;
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
@@ -168,7 +162,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 8);
+            this.label2.Location = new System.Drawing.Point(12, 7);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(93, 13);
             this.label2.TabIndex = 17;
@@ -177,26 +171,66 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(162, 7);
+            this.label3.Location = new System.Drawing.Point(140, 7);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(85, 13);
+            this.label3.Size = new System.Drawing.Size(122, 13);
             this.label3.TabIndex = 18;
-            this.label3.Text = "Список файлов";
+            this.label3.Text = "Список файлов тестов";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(474, 7);
+            this.label4.Location = new System.Drawing.Point(694, 7);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(140, 13);
             this.label4.TabIndex = 19;
             this.label4.Text = "Результаты тестирования";
             // 
+            // listView2
+            // 
+            this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3});
+            this.listView2.Location = new System.Drawing.Point(415, 26);
+            this.listView2.MultiSelect = false;
+            this.listView2.Name = "listView2";
+            this.listView2.Size = new System.Drawing.Size(276, 332);
+            this.listView2.SmallImageList = this.imageList1;
+            this.listView2.TabIndex = 20;
+            this.listView2.UseCompatibleStateImageBehavior = false;
+            this.listView2.View = System.Windows.Forms.View.Details;
+            this.listView2.SelectedIndexChanged += new System.EventHandler(this.listView2_SelectedIndexChanged);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Имя";
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Тип";
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Дата изменения";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(412, 7);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(129, 13);
+            this.label5.TabIndex = 21;
+            this.label5.Text = "Список файлов с кодом";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
+            // 
             // mainWindowForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(768, 365);
+            this.ClientSize = new System.Drawing.Size(861, 365);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.listView2);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -205,7 +239,6 @@
             this.Controls.Add(this.testBtn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.statWindow);
-            this.Controls.Add(this.openFile);
             this.Name = "mainWindowForm";
             this.Text = "Тестер олимпиад";
             this.Load += new System.EventHandler(this.mainWindowForm_Load);
@@ -219,7 +252,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.Button openFile;
         private System.Windows.Forms.TextBox statWindow;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
@@ -236,6 +268,11 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ListView listView2;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.Label label5;
     }
 }
 
