@@ -34,6 +34,46 @@ namespace cppjudge
         {
             InitializeComponent();
             //Скомпилировать программу
+            //Таймер автообновления
+            System.Threading.TimerCallback tm = new System.Threading.TimerCallback(refresh);
+            System.Threading.Timer timer = new System.Threading.Timer(tm,null,0,10000);
+        }
+
+        // Автообновление отображения содержимого папки
+        public void refresh(object obj)
+        {
+            if (testFolders.SelectedNode != null)
+            {
+                TreeNode newSelected = testFolders.SelectedNode;
+                listView1.Items.Clear();
+                DirectoryInfo nodeDirInfo = (DirectoryInfo)newSelected.Tag;
+                ListViewItem.ListViewSubItem[] subItems;
+                ListViewItem item = null;
+
+                foreach (DirectoryInfo dir in nodeDirInfo.GetDirectories())
+                {
+                    item = new ListViewItem(dir.Name, 0);
+                    subItems = new ListViewItem.ListViewSubItem[]
+                              {new ListViewItem.ListViewSubItem(item, "Directory"),
+                   new ListViewItem.ListViewSubItem(item,
+                dir.LastAccessTime.ToShortDateString())};
+                    item.SubItems.AddRange(subItems);
+                    listView1.Items.Add(item);
+                }
+                foreach (FileInfo file in nodeDirInfo.GetFiles())
+                {
+                    item = new ListViewItem(file.Name, 1);
+                    subItems = new ListViewItem.ListViewSubItem[]
+                              { new ListViewItem.ListViewSubItem(item, "File"),
+                   new ListViewItem.ListViewSubItem(item,
+                file.LastAccessTime.ToShortDateString())};
+
+                    item.SubItems.AddRange(subItems);
+                    listView1.Items.Add(item);
+                }
+
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            }
         }
 
         // Обработки кнопки компиляции
