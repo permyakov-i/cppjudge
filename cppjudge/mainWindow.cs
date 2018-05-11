@@ -170,6 +170,7 @@ namespace cppjudge
             if (memLimit.Length != 0)
             {
                 Int32.TryParse(memLimit, out memoryLimit);
+                memoryLimit = memoryLimit * 1024; // Перевести из килобайт в байты
             }
 
             var errors = new StringBuilder();
