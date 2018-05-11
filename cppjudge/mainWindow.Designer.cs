@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainWindowForm));
-            this.compileFile = new System.Windows.Forms.Button();
             this.openFile = new System.Windows.Forms.Button();
             this.statWindow = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -45,27 +44,20 @@
             this.name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lastModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // compileFile
-            // 
-            this.compileFile.Location = new System.Drawing.Point(139, 333);
-            this.compileFile.Name = "compileFile";
-            this.compileFile.Size = new System.Drawing.Size(116, 23);
-            this.compileFile.TabIndex = 0;
-            this.compileFile.Text = "Компилировать";
-            this.compileFile.UseVisualStyleBackColor = true;
-            this.compileFile.Click += new System.EventHandler(this.compileFile_Click);
-            // 
             // openFile
             // 
             this.openFile.Location = new System.Drawing.Point(12, 333);
             this.openFile.Name = "openFile";
-            this.openFile.Size = new System.Drawing.Size(121, 23);
+            this.openFile.Size = new System.Drawing.Size(146, 23);
             this.openFile.TabIndex = 2;
             this.openFile.Text = "Выбрать файл";
             this.openFile.UseVisualStyleBackColor = true;
@@ -73,10 +65,10 @@
             // 
             // statWindow
             // 
-            this.statWindow.Location = new System.Drawing.Point(473, 12);
+            this.statWindow.Location = new System.Drawing.Point(473, 24);
             this.statWindow.Multiline = true;
             this.statWindow.Name = "statWindow";
-            this.statWindow.Size = new System.Drawing.Size(277, 342);
+            this.statWindow.Size = new System.Drawing.Size(277, 330);
             this.statWindow.TabIndex = 3;
             // 
             // openFileDialog1
@@ -93,9 +85,9 @@
             // 
             // testBtn
             // 
-            this.testBtn.Location = new System.Drawing.Point(261, 333);
+            this.testBtn.Location = new System.Drawing.Point(165, 333);
             this.testBtn.Name = "testBtn";
-            this.testBtn.Size = new System.Drawing.Size(125, 23);
+            this.testBtn.Size = new System.Drawing.Size(147, 23);
             this.testBtn.TabIndex = 13;
             this.testBtn.Text = "Тестировать";
             this.testBtn.UseVisualStyleBackColor = true;
@@ -103,9 +95,9 @@
             // 
             // btnConfig
             // 
-            this.btnConfig.Location = new System.Drawing.Point(392, 333);
+            this.btnConfig.Location = new System.Drawing.Point(318, 333);
             this.btnConfig.Name = "btnConfig";
-            this.btnConfig.Size = new System.Drawing.Size(75, 23);
+            this.btnConfig.Size = new System.Drawing.Size(149, 23);
             this.btnConfig.TabIndex = 14;
             this.btnConfig.Text = "Настройки";
             this.btnConfig.UseVisualStyleBackColor = true;
@@ -119,7 +111,7 @@
             this.testFolders.Location = new System.Drawing.Point(0, 0);
             this.testFolders.Name = "testFolders";
             this.testFolders.SelectedImageIndex = 0;
-            this.testFolders.Size = new System.Drawing.Size(146, 315);
+            this.testFolders.Size = new System.Drawing.Size(146, 303);
             this.testFolders.TabIndex = 15;
             this.testFolders.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.testFolders_NodeMouseClick);
             // 
@@ -132,7 +124,7 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Location = new System.Drawing.Point(12, 12);
+            this.splitContainer1.Location = new System.Drawing.Point(12, 24);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -142,7 +134,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.listView1);
-            this.splitContainer1.Size = new System.Drawing.Size(455, 315);
+            this.splitContainer1.Size = new System.Drawing.Size(455, 303);
             this.splitContainer1.SplitterDistance = 146;
             this.splitContainer1.TabIndex = 16;
             // 
@@ -153,10 +145,9 @@
             this.type,
             this.lastModified});
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.HoverSelection = true;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(305, 315);
+            this.listView1.Size = new System.Drawing.Size(305, 303);
             this.listView1.SmallImageList = this.imageList1;
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
@@ -174,18 +165,47 @@
             // 
             this.lastModified.Text = "Дата изменения";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 8);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(93, 13);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "Папка с тестами";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(162, 7);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(85, 13);
+            this.label3.TabIndex = 18;
+            this.label3.Text = "Список файлов";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(474, 7);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(140, 13);
+            this.label4.TabIndex = 19;
+            this.label4.Text = "Результаты тестирования";
+            // 
             // mainWindowForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(768, 365);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.btnConfig);
             this.Controls.Add(this.testBtn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.statWindow);
             this.Controls.Add(this.openFile);
-            this.Controls.Add(this.compileFile);
             this.Name = "mainWindowForm";
             this.Text = "Тестер олимпиад";
             this.Load += new System.EventHandler(this.mainWindowForm_Load);
@@ -199,8 +219,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Button compileFile;
         private System.Windows.Forms.Button openFile;
         private System.Windows.Forms.TextBox statWindow;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
@@ -215,6 +233,9 @@
         private System.Windows.Forms.ColumnHeader name;
         private System.Windows.Forms.ColumnHeader type;
         private System.Windows.Forms.ColumnHeader lastModified;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
     }
 }
 

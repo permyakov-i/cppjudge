@@ -79,8 +79,7 @@ namespace cppjudge
         // Обработки кнопки компиляции
         private void compileFile_Click(object sender, EventArgs e)
         {
-            compileCode();
-            statWindow.Clear();
+            
         }
 
 
@@ -275,10 +274,10 @@ namespace cppjudge
 
         // Обработчик кнопки тестирования
         private void testBtn_Click(object sender, EventArgs e)
-        {
-
+        {            
             if (CurrentFile != null && testFolders.SelectedNode != null)
             {
+                compileCode();
                 statWindow.Clear();
                 directoryPath = Environment.CurrentDirectory.Replace(Path.GetFileName(Environment.CurrentDirectory), "") + testFolders.SelectedNode.FullPath;
                 testAll(directoryPath);
