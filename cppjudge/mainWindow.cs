@@ -545,5 +545,13 @@ namespace cppjudge
         {
 
         }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                item.Selected = false;
+            }
+        }
     }
 }
