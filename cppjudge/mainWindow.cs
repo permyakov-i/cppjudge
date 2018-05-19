@@ -200,6 +200,7 @@ namespace cppjudge
                 errors.Append(d.Data);
             };
             Stopwatch sw = Stopwatch.StartNew();
+
             proc.Start();
             // Слушать поток
             proc.BeginErrorReadLine();
@@ -238,10 +239,16 @@ namespace cppjudge
             // Вывод
             string stdout = output.ToString();
             string stderr = errors.ToString();
+
             if (proc.ExitCode != 0 || hadErrors)
             {
-                MessageBox.Show("error:" + stderr);
+                if (proc.ExitCode==-1073741819)
+                {
+                    MessageBox.Show("[FAIL] Segmentation fault");
+                }else
+                    MessageBox.Show("[FAIL] Error:" + stderr);
             }
+
 
             if (isOk)
                 testResult = stdout;
