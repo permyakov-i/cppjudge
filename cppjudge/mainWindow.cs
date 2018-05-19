@@ -206,16 +206,21 @@ namespace cppjudge
             // Слушать поток
             proc.BeginErrorReadLine();
             proc.BeginOutputReadLine();
-            long memoryUsed = proc.PrivateMemorySize64; //считать память            
-            // Убить процесс если память превышена
-            if (memoryUsed > memoryLimit)
-            {
-                proc.Kill();
-            }
             foreach (string s in readText)
             {
                 proc.StandardInput.WriteLine(s);
             }
+            long memoryUsed = proc.PrivateMemorySize64; //считать память     
+            do
+            {
+                proc.Refresh();
+                memoryUsed = proc.PrivateMemorySize64;
+                // Убить процесс если память превышена
+                if (memoryUsed > memoryLimit && !proc.HasExited)
+                {
+                    proc.Kill();
+                }
+            } while (!proc.WaitForExit(timeLimit * 1000));
             timeout = proc.WaitForExit(timeLimit * 1000);
             //Убить процесс если время превышено
             if (!timeout)
@@ -246,7 +251,7 @@ namespace cppjudge
                 if (proc.ExitCode==-1073741819)
                 {
                     MessageBox.Show("[FAIL] Segmentation fault");
-                }else
+                }else if(proc.ExitCode != -1)
                     MessageBox.Show("[FAIL] Error:" + stderr);
             }
 
@@ -262,7 +267,7 @@ namespace cppjudge
                 message = " Test № " + currTest + " Passed "  + Environment.NewLine;
             }else
             {
-                message = " Test № " + currTest + " Failed " + Environment.NewLine;
+                message+= " Test № " + currTest + " Failed " + Environment.NewLine;
             }
             globalGrade += grade;
             currTest++;
