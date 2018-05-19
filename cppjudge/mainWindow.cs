@@ -11,6 +11,7 @@ using System.CodeDom.Compiler;
 using System.Diagnostics;
 using System.IO;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 
 namespace cppjudge
@@ -496,10 +497,10 @@ namespace cppjudge
             string[] code = System.IO.File.ReadAllLines(codeFile);
             foreach (string line in code)
             {
-                if (line.Contains("system(\"pause\")") || line.Contains("system (\"pause\")"))
+                if (line.IndexOf("system(\"pause\")", StringComparison.OrdinalIgnoreCase) >=0 || line.IndexOf("system (\"pause\")", StringComparison.OrdinalIgnoreCase) >=0)
                 {
-                    code[id]=code[id].Replace("system(\"pause\")", "");
-                    code[id] = code[id].Replace("system (\"pause\")", "");
+                    code[id] = Regex.Replace(code[id], "system\\(\"pause\"\\)", "", RegexOptions.IgnoreCase);
+                    code[id] = Regex.Replace(code[id], "system \\(\"pause\"\\)", "", RegexOptions.IgnoreCase);
                 }
                 if (line.Contains("_tmain"))
                 {
@@ -516,6 +517,14 @@ namespace cppjudge
                 if (line.Contains("#include <conio.h>"))
                 {
                     code[id] = code[id].Replace("#include <conio.h>", "");
+                }
+                if (line.IndexOf("#include <stdafx.h>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    code[id] = Regex.Replace(code[id], "#include <stdafx.h>", "", RegexOptions.IgnoreCase);
+                }
+                if (line.Contains("getch()"))
+                {
+                    code[id] = code[id].Replace("getch()", "");
                 }
                 if (code.Length >= id + 2)
                 {
