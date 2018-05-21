@@ -140,7 +140,7 @@ namespace cppjudge
 
             if (proc.ExitCode != 0 || hadErrors)
             {
-                MessageBox.Show("error:" + stderr);
+                statWindow.Text += ("Compilation error:" + stderr);
             }
             else
             {
@@ -256,11 +256,16 @@ namespace cppjudge
 
             if (proc.ExitCode != 0 || hadErrors)
             {
-                if (proc.ExitCode==segFault)
+                if (proc.ExitCode == segFault)
                 {
-                    MessageBox.Show("[FAIL] Segmentation fault");
-                }else if(proc.ExitCode != -1)
-                    MessageBox.Show("[FAIL] Error:" + stderr);
+                    message = "[FAIL] Segmentation fault in test №" + currTest.ToString() + "\n";
+                    isOk = false;
+                }
+                else if (proc.ExitCode != -1)
+                {
+                    message = "[FAIL] Error:" + stderr;
+                    isOk = false;
+                }
             }
 
 
@@ -272,7 +277,7 @@ namespace cppjudge
             int grade = compareResult(expectedResult, testResult);
             if (grade > 0)
             {
-                message = " Test № " + currTest + " Passed "  + Environment.NewLine;
+                message+= " Test № " + currTest + " Passed "  + Environment.NewLine;
             }else
             {
                 message+= " Test № " + currTest + " Failed " + Environment.NewLine;
@@ -358,6 +363,7 @@ namespace cppjudge
                         thread.Start();
                         thread.Join();
                         statWindow.Text += message;
+                        message = "";
                     }
                     prevFile = fileName;
                 }
