@@ -100,6 +100,7 @@
             // testFolders
             // 
             this.testFolders.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.testFolders.HideSelection = false;
             this.testFolders.ImageIndex = 0;
             this.testFolders.ImageList = this.imageList1;
             this.testFolders.Location = new System.Drawing.Point(0, 0);
