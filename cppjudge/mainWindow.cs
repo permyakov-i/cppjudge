@@ -213,16 +213,20 @@ namespace cppjudge
             }
             long memoryUsed = proc.PrivateMemorySize64; //считать память     
             do
-            {
-                proc.Refresh();                         
+            {                                    
                 // Убить процесс если память превышена
                 if (memoryUsed > memoryLimit && !proc.HasExited)
                 {
                     proc.Kill();
                 }
-                if (!proc.HasExited)
+                proc.Refresh();
+                if (!proc.HasExited && proc.Responding)
                 {
-                    memoryUsed = proc.PrivateMemorySize64;
+                    proc.Refresh();
+                    if (!proc.HasExited)
+                    {
+                        memoryUsed = proc.PeakWorkingSet64;
+                    }
                 }
             } while (!proc.HasExited);
             timeout = proc.WaitForExit(timeLimit * 1000);
