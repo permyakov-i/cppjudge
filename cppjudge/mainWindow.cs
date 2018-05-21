@@ -220,7 +220,7 @@ namespace cppjudge
                 {
                     proc.Kill();
                 }
-            } while (!proc.WaitForExit(timeLimit * 1000));
+            } while (!proc.HasExited);
             timeout = proc.WaitForExit(timeLimit * 1000);
             //Убить процесс если время превышено
             if (!timeout)
