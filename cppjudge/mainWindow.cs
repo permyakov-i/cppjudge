@@ -26,7 +26,8 @@ namespace cppjudge
         int currTest = 0; // Номер текущего теста
         int timeLimit = 150;
         int memoryLimit = 268435456; // Ограничение памяти
-        int folderNumber = 0;
+        int folderNumber = 0; 
+        int segFault = -1073741819; // Код ошибки сегментации
         string message = "";
         string timeLim = ""; // Поле времени
         string memLimit = ""; // Поле памяти
@@ -248,7 +249,7 @@ namespace cppjudge
 
             if (proc.ExitCode != 0 || hadErrors)
             {
-                if (proc.ExitCode==-1073741819)
+                if (proc.ExitCode==segFault)
                 {
                     MessageBox.Show("[FAIL] Segmentation fault");
                 }else if(proc.ExitCode != -1)
