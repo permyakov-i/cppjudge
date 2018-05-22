@@ -12,7 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Collections;
 using System.Text.RegularExpressions;
-
+using System.Threading;
 
 namespace cppjudge
 {
@@ -34,6 +34,8 @@ namespace cppjudge
         string compilerPath = ""; // Поле пути к компилятору
         string directoryPath = ""; // Путь к папке с тестами       
         string[] testGrades = new string[1000]; // Оценки за тесты
+        static List<Thread> threads = new List<Thread>(); //Пул потоков
+
         public mainWindowForm()
         {
             InitializeComponent();
@@ -149,8 +151,13 @@ namespace cppjudge
         }
 
         // Запуск одного теста
-        public void runTest(string fileName, string expectedResult)
+        public void runTest(object state)
         {
+            object[] array = state as object[];
+            string fileName=Convert.ToString(array[0]);
+            string expectedResult=Convert.ToString(array[1]);
+            AutoResetEvent are = (AutoResetEvent)array[2];
+
             isOk = true;
             bool timeout = true;
             string result = "";
@@ -284,6 +291,7 @@ namespace cppjudge
             }
             globalGrade += grade;
             currTest++;
+            are.Set();
         }
 
         // Проверка результатов тестирования
@@ -353,21 +361,51 @@ namespace cppjudge
             }
             else
             {
+                int i = 0;
                 string prevFile = null;
+                ThreadPool.SetMaxThreads(procCount, procCount*2);
                 foreach (string fileName in fileEntries)
                 {
                     if (prevFile != null && !prevFile.EndsWith(".a"))
-                    {
-                        System.Threading.ThreadStart starter = () => runTest(prevFile, fileName);
-                        System.Threading.Thread thread = new System.Threading.Thread(starter);
-                        thread.Start();
-                        thread.Join();
-                        statWindow.Text += message;
-                        message = "";
+                    {     
+                        // Создаём пул потоков
+                        ThreadPool.QueueUserWorkItem(new WaitCallback(runTest), new object[] {prevFile, fileName, waitHandles[i]});
+                        i++;
                     }
                     prevFile = fileName;
                 }
+                foreach(var e in waitHandles)
+                e.WaitOne();
+                statWindow.Text += message;
+                message = "";
             }
+        }
+
+        static WaitHandle[] waitHandles = new WaitHandle[]
+        {
+            new AutoResetEvent(false),
+            new AutoResetEvent(false),
+            new AutoResetEvent(false),
+            new AutoResetEvent(false),
+            new AutoResetEvent(false),
+            new AutoResetEvent(false),
+            new AutoResetEvent(false)
+        };
+
+        public static void SpawnAndWait(IEnumerable<Action> actions)
+        {
+            var list = actions.ToList();
+            var handles = new ManualResetEvent[actions.Count()];
+            for (var i = 0; i < list.Count; i++)
+            {
+                handles[i] = new ManualResetEvent(false);
+                var currentAction = list[i];
+                var currentHandle = handles[i];
+                Action wrappedAction = () => { try { currentAction(); } finally { currentHandle.Set(); } };
+                ThreadPool.QueueUserWorkItem(x => wrappedAction());
+            }
+
+            WaitHandle.WaitAll(handles);
         }
 
         // Обработчик кнопки настроек
