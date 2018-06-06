@@ -59,7 +59,10 @@
             // 
             // statWindow
             // 
+            this.statWindow.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.statWindow.Location = new System.Drawing.Point(697, 26);
+            this.statWindow.MinimumSize = new System.Drawing.Size(152, 278);
             this.statWindow.Multiline = true;
             this.statWindow.Name = "statWindow";
             this.statWindow.Size = new System.Drawing.Size(152, 278);
@@ -79,9 +82,11 @@
             // 
             // testBtn
             // 
+            this.testBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.testBtn.Location = new System.Drawing.Point(697, 310);
+            this.testBtn.MinimumSize = new System.Drawing.Size(153, 23);
             this.testBtn.Name = "testBtn";
-            this.testBtn.Size = new System.Drawing.Size(152, 23);
+            this.testBtn.Size = new System.Drawing.Size(153, 23);
             this.testBtn.TabIndex = 13;
             this.testBtn.Text = "Тестировать";
             this.testBtn.UseVisualStyleBackColor = true;
@@ -89,9 +94,11 @@
             // 
             // btnConfig
             // 
+            this.btnConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnConfig.Location = new System.Drawing.Point(697, 335);
+            this.btnConfig.MinimumSize = new System.Drawing.Size(153, 23);
             this.btnConfig.Name = "btnConfig";
-            this.btnConfig.Size = new System.Drawing.Size(152, 23);
+            this.btnConfig.Size = new System.Drawing.Size(153, 23);
             this.btnConfig.TabIndex = 14;
             this.btnConfig.Text = "Настройки";
             this.btnConfig.UseVisualStyleBackColor = true;
@@ -99,11 +106,14 @@
             // 
             // testFolders
             // 
-            this.testFolders.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.testFolders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.testFolders.HideSelection = false;
             this.testFolders.ImageIndex = 0;
             this.testFolders.ImageList = this.imageList1;
             this.testFolders.Location = new System.Drawing.Point(0, 0);
+            this.testFolders.MinimumSize = new System.Drawing.Size(115, 332);
             this.testFolders.Name = "testFolders";
             this.testFolders.SelectedImageIndex = 0;
             this.testFolders.Size = new System.Drawing.Size(115, 332);
@@ -119,7 +129,11 @@
             // 
             // splitContainer1
             // 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.Location = new System.Drawing.Point(12, 26);
+            this.splitContainer1.MinimumSize = new System.Drawing.Size(397, 332);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -135,12 +149,15 @@
             // 
             // listView1
             // 
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.name,
             this.type,
             this.lastModified});
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.MinimumSize = new System.Drawing.Size(278, 332);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(278, 332);
@@ -173,6 +190,7 @@
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(128, 7);
             this.label3.Name = "label3";
@@ -182,6 +200,8 @@
             // 
             // label4
             // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(694, 7);
             this.label4.Name = "label4";
@@ -191,12 +211,15 @@
             // 
             // listView2
             // 
+            this.listView2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3});
             this.listView2.HideSelection = false;
             this.listView2.Location = new System.Drawing.Point(415, 26);
+            this.listView2.MinimumSize = new System.Drawing.Size(276, 332);
             this.listView2.MultiSelect = false;
             this.listView2.Name = "listView2";
             this.listView2.Size = new System.Drawing.Size(276, 332);
@@ -220,6 +243,8 @@
             // 
             // label5
             // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(412, 7);
             this.label5.Name = "label5";
@@ -243,6 +268,7 @@
             this.Controls.Add(this.testBtn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.statWindow);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "mainWindowForm";
             this.Text = "Тестер олимпиад";
             this.Load += new System.EventHandler(this.mainWindowForm_Load);

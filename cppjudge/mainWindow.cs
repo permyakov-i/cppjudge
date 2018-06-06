@@ -13,12 +13,14 @@ using System.IO;
 using System.Collections;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace cppjudge
 {
     public partial class mainWindowForm : Form
     {
         bool isOk = true; // флаг ошибки
+        bool compilationSuccessful = true;
         string CurrentFile;   // Текущий открытый файл
         string testResult;   // Выход теста      
         int globalGrade = 0;  // Оценка
@@ -104,7 +106,7 @@ namespace cppjudge
             Process proc = new Process();
             proc.StartInfo.FileName = @compilerPath;
             proc.StartInfo.Arguments = CurrentFile + " -o" + exeName;
-            proc.StartInfo.CreateNoWindow = false;
+            proc.StartInfo.CreateNoWindow = true;
             proc.StartInfo.RedirectStandardError = true;
             proc.StartInfo.RedirectStandardOutput = true;
             proc.StartInfo.UseShellExecute = false;
@@ -130,19 +132,27 @@ namespace cppjudge
                 }
                 errors.Append(d.Data);
             };
+            string stdout = "";
+            string stderr = "";
+            try
+            {
+                proc.Start();
+                // Слушать поток
+                proc.BeginErrorReadLine();
+                proc.BeginOutputReadLine();
 
-            proc.Start();
-            // Слушать поток
-            proc.BeginErrorReadLine();
-            proc.BeginOutputReadLine();
-
-            proc.WaitForExit();
-            string stdout = output.ToString();
-            string stderr = errors.ToString();
-
+                proc.WaitForExit();
+                stdout = output.ToString();
+                stderr = errors.ToString();
+            }
+            catch(Win32Exception)
+            {
+                compilationSuccessful = false;
+            }
             if (proc.ExitCode != 0 || hadErrors)
             {
                 statWindow.Text += ("Compilation error:" + stderr);
+                compilationSuccessful = false;
             }
             else
             {
@@ -151,13 +161,8 @@ namespace cppjudge
         }
 
         // Запуск одного теста
-        public void runTest(object state)
+        public void runTest(string fileName, string expectedResult)
         {
-            object[] array = state as object[];
-            string fileName=Convert.ToString(array[0]);
-            string expectedResult=Convert.ToString(array[1]);
-            AutoResetEvent are = (AutoResetEvent)array[2];
-
             isOk = true;
             bool timeout = true;
             string result = "";
@@ -169,9 +174,8 @@ namespace cppjudge
             string exeName = Path.GetFileNameWithoutExtension(CurrentFile);
             Process proc = new Process();
             proc.StartInfo.FileName = exeName;
-            //proc.StartInfo.Arguments = CurrentFile + " -o" + exeName;
             proc.StartInfo.RedirectStandardInput = true;
-            proc.StartInfo.CreateNoWindow = false;
+            proc.StartInfo.CreateNoWindow = true;
             proc.StartInfo.RedirectStandardError = true;
             proc.StartInfo.RedirectStandardOutput = true;
             proc.StartInfo.UseShellExecute = false;
@@ -192,7 +196,12 @@ namespace cppjudge
             var errors = new StringBuilder();
             var output = new StringBuilder();
             var hadErrors = false;
+            bool hasExited=false;
 
+            proc.Exited += (sender, e) => 
+            {
+                hasExited = true;
+            };
             // Получить вывод
             proc.OutputDataReceived += (s, d) =>
             {
@@ -208,45 +217,56 @@ namespace cppjudge
                 }
                 errors.Append(d.Data);
             };
-            Stopwatch sw = Stopwatch.StartNew();
 
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             proc.Start();
             // Слушать поток
             proc.BeginErrorReadLine();
             proc.BeginOutputReadLine();
+            string stdout="";
+            string stderr="";
+
             foreach (string s in readText)
             {
                 proc.StandardInput.WriteLine(s);
             }
-            long memoryUsed = proc.PrivateMemorySize64; //считать память     
-            do
-            {                                    
-                // Убить процесс если память превышена
-                if (memoryUsed > memoryLimit && !proc.HasExited)
-                {
-                    proc.Kill();
-                }
-                proc.Refresh();
-                if (!proc.HasExited && proc.Responding)
-                {
-                    proc.Refresh();
-                    if (!proc.HasExited)
-                    {
-                        memoryUsed = proc.PeakWorkingSet64;
-                    }
-                }
-            } while (!proc.HasExited);
-            timeout = proc.WaitForExit(timeLimit * 1000);
-            //Убить процесс если время превышено
-            if (!timeout)
+            long memoryUsed = 1;
+            try
             {
-                proc.Kill();
+                if (!hasExited)
+                    memoryUsed = proc.PrivateMemorySize64; //считать память     
+                while (!hasExited)
+                {
+                    // Убить процесс если память превышена
+                    if (memoryUsed > memoryLimit && !hasExited)
+                    {
+                        proc.Kill();
+                    }
+                    timeout = sw.ElapsedMilliseconds > (timeLimit * 1000);
+                    //Убить процесс если время превышено
+                    if (timeout && !hasExited)
+                    {
+                        proc.Kill();
+                    }
+                    proc.Refresh();
+                    if (!hasExited)
+                        memoryUsed = proc.PeakWorkingSet64;
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                //MessageBox.Show("Process already exited");
+            }
+            catch (Win32Exception)
+            {
+                //MessageBox.Show("Process is terminating");
             }
             // Вывести ошибку памяти
             if (memoryUsed > memoryLimit)
             {
                 result = "[FAIL] Out of memory " + (memoryUsed / 1024).ToString() + "KB used";
-                message = result + " in test №" + currTest.ToString() + "\n";
+                message+= result + " in test №" + currTest.ToString() + Environment.NewLine;
                 isOk = false;
             }
             TimeSpan timeElapsed = sw.Elapsed; //считать время выполнения
@@ -254,18 +274,18 @@ namespace cppjudge
             if (timeElapsed.TotalSeconds > timeLimit)
             {
                 result = "[FAIL] Timeout " + timeElapsed.TotalSeconds.ToString() + " seconds";
-                message = result + " in test №" + currTest.ToString() + "\n";
+                message+= result + " in test №" + currTest.ToString() + Environment.NewLine;
                 isOk = false;
             }
             // Вывод
-            string stdout = output.ToString();
-            string stderr = errors.ToString();
+            stdout = output.ToString();
+            stderr = errors.ToString();
 
             if (proc.ExitCode != 0 || hadErrors)
             {
                 if (proc.ExitCode == segFault)
                 {
-                    message = "[FAIL] Segmentation fault in test №" + currTest.ToString() + "\n";
+                    message = "[FAIL] Segmentation fault in test №" + currTest.ToString() + Environment.NewLine;
                     isOk = false;
                 }
                 else if (proc.ExitCode != -1)
@@ -274,8 +294,6 @@ namespace cppjudge
                     isOk = false;
                 }
             }
-
-
             if (isOk)
                 testResult = stdout;
             else
@@ -291,7 +309,6 @@ namespace cppjudge
             }
             globalGrade += grade;
             currTest++;
-            are.Set();
         }
 
         // Проверка результатов тестирования
@@ -318,18 +335,22 @@ namespace cppjudge
                 statWindow.Clear();
                 compileCode();
                 directoryPath = Environment.CurrentDirectory.Replace(Path.GetFileName(Environment.CurrentDirectory), "") + testFolders.SelectedNode.FullPath;
-                testAll(directoryPath);
-                if (testsCount % 2 == 0)
+                if (compilationSuccessful)
                 {
-                    Int32.TryParse(testFolders.SelectedNode.Text, out folderNumber);
-                    int testGrade = 0;
-                    Int32.TryParse(testGrades[folderNumber-1], out testGrade);
-                    double grade = ((double)globalGrade / ((double)testsCount / 2)) * testGrade;
-                    statWindow.Text += "\n Overall grade: " + grade.ToString() + " from "+ testGrade+ Environment.NewLine;
-                    folderNumber++;
-                } else
-                {
-                    statWindow.Text += "\n Testing failed";
+                    testAll(directoryPath);
+                    if (testsCount % 2 == 0)
+                    {
+                        Int32.TryParse(testFolders.SelectedNode.Text, out folderNumber);
+                        int testGrade = 0;
+                        Int32.TryParse(testGrades[folderNumber - 1], out testGrade);
+                        double grade = ((double)globalGrade / ((double)testsCount / 2)) * testGrade;
+                        statWindow.Text += "\n Overall grade: " + grade.ToString() + " from " + testGrade + Environment.NewLine;
+                        folderNumber++;
+                    }
+                    else
+                    {
+                        statWindow.Text += "\n Testing failed";
+                    }
                 }
             }else
             {
@@ -345,7 +366,7 @@ namespace cppjudge
         private void testAll(string targetDirectory)
         {
             int procCount = Environment.ProcessorCount; // Получить количество ядер процессора
-            System.Threading.ThreadPool.SetMaxThreads(procCount, procCount); // Задать максимум активных потоков
+
             currTest = 0;
             globalGrade = 0;
             // Тестировать
@@ -361,52 +382,34 @@ namespace cppjudge
             }
             else
             {
-                int i = 0;
+                int k =0,j = 0;
                 string prevFile = null;
-                ThreadPool.SetMaxThreads(procCount, procCount*2);
+                string[] tests= new string[testsCount/2];
+                string[] answers= new string[testsCount/2]; ;
+                Task[] tasks = new Task[testsCount/2];
                 foreach (string fileName in fileEntries)
                 {
-                    if (prevFile != null && !prevFile.EndsWith(".a"))
-                    {     
-                        // Создаём пул потоков
-                        ThreadPool.QueueUserWorkItem(new WaitCallback(runTest), new object[] {prevFile, fileName, waitHandles[i]});
-                        i++;
+                    if (fileName.EndsWith(".a"))
+                    {
+                        answers[k] = fileName;
+                        k++;
+                    }else
+                    {
+                        tests[j] = fileName;
+                        j++;
                     }
-                    prevFile = fileName;
                 }
-                foreach(var e in waitHandles)
-                e.WaitOne();
+                for (int i=0; i< testsCount/2;i++)
+                {
+                    int temp = i;
+                    tasks[temp] = Task.Factory.StartNew(() => runTest(tests[temp], answers[temp]));
+                }
+                Task.WaitAll(tasks);
                 statWindow.Text += message;
                 message = "";
             }
         }
 
-        static WaitHandle[] waitHandles = new WaitHandle[]
-        {
-            new AutoResetEvent(false),
-            new AutoResetEvent(false),
-            new AutoResetEvent(false),
-            new AutoResetEvent(false),
-            new AutoResetEvent(false),
-            new AutoResetEvent(false),
-            new AutoResetEvent(false)
-        };
-
-        public static void SpawnAndWait(IEnumerable<Action> actions)
-        {
-            var list = actions.ToList();
-            var handles = new ManualResetEvent[actions.Count()];
-            for (var i = 0; i < list.Count; i++)
-            {
-                handles[i] = new ManualResetEvent(false);
-                var currentAction = list[i];
-                var currentHandle = handles[i];
-                Action wrappedAction = () => { try { currentAction(); } finally { currentHandle.Set(); } };
-                ThreadPool.QueueUserWorkItem(x => wrappedAction());
-            }
-
-            WaitHandle.WaitAll(handles);
-        }
 
         // Обработчик кнопки настроек
         private void btnConfig_Click(object sender, EventArgs e)
@@ -483,7 +486,7 @@ namespace cppjudge
             ListViewItem.ListViewSubItem[] subItems2;
             ListViewItem item2 = null;
 
-            foreach (DirectoryInfo dir in nodeDirInfo2.GetDirectories())
+         /*   foreach (DirectoryInfo dir in nodeDirInfo2.GetDirectories())
             {
                 item2 = new ListViewItem(dir.Name, 0);
                 subItems2 = new ListViewItem.ListViewSubItem[]
@@ -492,7 +495,7 @@ namespace cppjudge
                 dir.LastAccessTime.ToShortDateString())};
                 item2.SubItems.AddRange(subItems2);
                 listView2.Items.Add(item2);
-            }
+            }*/
             foreach (FileInfo file in nodeDirInfo2.GetFiles())
             {
                 item2 = new ListViewItem(file.Name, 1);
