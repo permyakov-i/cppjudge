@@ -165,7 +165,10 @@ namespace cppjudge
         {
             isOk = true;
             bool timeout = true;
+            bool outputFinished = false;
             string result = "";
+            string stdout = "";
+            string stderr = "";
             // Загрузить конфигурацию
             loadConfig();
             // Прочитать файл теста
@@ -205,7 +208,10 @@ namespace cppjudge
             // Получить вывод
             proc.OutputDataReceived += (s, d) =>
             {
-                output.Append(d.Data);
+                if (!String.IsNullOrEmpty(d.Data))
+                    output.Append(d.Data);
+                else
+                    outputFinished = true;
             };
 
             // Получить ошибки
@@ -224,8 +230,7 @@ namespace cppjudge
             // Слушать поток
             proc.BeginErrorReadLine();
             proc.BeginOutputReadLine();
-            string stdout="";
-            string stderr="";
+
 
             foreach (string s in readText)
             {
@@ -277,38 +282,46 @@ namespace cppjudge
                 message+= result + " in test №" + currTest.ToString() + Environment.NewLine;
                 isOk = false;
             }
-            // Вывод
-            stdout = output.ToString();
-            stderr = errors.ToString();
-
-            if (proc.ExitCode != 0 || hadErrors)
+            while (!outputFinished)
             {
-                if (proc.ExitCode == segFault)
-                {
-                    message = "[FAIL] Segmentation fault in test №" + currTest.ToString() + Environment.NewLine;
-                    isOk = false;
-                }
-                else if (proc.ExitCode != -1)
-                {
-                    message = "[FAIL] Error:" + stderr;
-                    isOk = false;
-                }
+                Thread.Sleep(500);
             }
-            if (isOk)
-                testResult = stdout;
-            else
-                testResult = result;
+            if (outputFinished)
+            {
+                // Вывод
+                stdout = output.ToString();
+                stderr = errors.ToString();
 
-            int grade = compareResult(expectedResult, testResult);
-            if (grade > 0)
-            {
-                message+= " Test № " + currTest + " Passed "  + Environment.NewLine;
-            }else
-            {
-                message+= " Test № " + currTest + " Failed " + Environment.NewLine;
+                if (proc.ExitCode != 0 || hadErrors)
+                {
+                    if (proc.ExitCode == segFault)
+                    {
+                        message += "[FAIL] Segmentation fault in test №" + currTest.ToString() + Environment.NewLine;
+                        isOk = false;
+                    }
+                    else if (proc.ExitCode != -1)
+                    {
+                        message += "[FAIL] Error:" + stderr;
+                        isOk = false;
+                    }
+                }
+                if (isOk)
+                    testResult = stdout;
+                else
+                    testResult = result;
+
+                int grade = compareResult(expectedResult, testResult);
+                if (grade > 0)
+                {
+                    message += " Test № " + currTest + " Passed " + Environment.NewLine;
+                }
+                else
+                {
+                    message += " Test № " + currTest + " Failed " + Environment.NewLine;
+                }
+                globalGrade += grade;
+                currTest++;
             }
-            globalGrade += grade;
-            currTest++;
         }
 
         // Проверка результатов тестирования
